@@ -9,7 +9,10 @@
       </Recommend>
       <Album>
       </Album>
+      <TopList>
+      </TopList>
     </el-main>
+    <el-footer>Footer</el-footer>
   </el-container>
 </template>
 
@@ -18,13 +21,15 @@
 import Header from '@/components/Header.vue'
 import Recommend from '@/components/Recommend.vue'
 import Album from '@/components/Album.vue'
+import TopList from '@/components/TopList.vue'
 
 export default {
   name: 'Home',
   components: {
     Header,
     Recommend,
-    Album
+    Album,
+    TopList
   }
 }
 </script>
