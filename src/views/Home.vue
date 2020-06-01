@@ -13,7 +13,10 @@
       </TopList>
     </el-main>
     <el-footer>Footer</el-footer>
+    <Player>
+    </Player>
   </el-container>
+  
 </template>
 
 <script>
@@ -22,6 +25,7 @@ import Header from '@/components/Header.vue'
 import Recommend from '@/components/Recommend.vue'
 import Album from '@/components/Album.vue'
 import TopList from '@/components/TopList.vue'
+import Player from '@/components/Player.vue'
 
 export default {
   name: 'Home',
@@ -29,7 +33,8 @@ export default {
     Header,
     Recommend,
     Album,
-    TopList
+    TopList,
+    Player
   }
 }
 </script>
