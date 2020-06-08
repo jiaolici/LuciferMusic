@@ -32,7 +32,7 @@ function filterNull (o) {
   另外，不同的项目的处理方法也是不一致的，这里出错就是简单的alert
 */
 
-function apiAxios (method, url, params, success, failure) {
+function apiAxios (method, url, params, responseType, success, failure) {
   if (params) {
     params = filterNull(params)
   }
@@ -42,7 +42,8 @@ function apiAxios (method, url, params, success, failure) {
     data: method === 'POST' || method === 'PUT' ? params : null,
     params: method === 'GET' || method === 'DELETE' ? params : null,
     baseURL: root,
-    withCredentials: false
+    withCredentials: false,
+    responseType: responseType ? responseType : "json"
   })
   .then(function (res) {
     if (res.data) {
@@ -68,17 +69,17 @@ function apiAxios (method, url, params, success, failure) {
 
 // 返回在vue模板中的调用接口
 export default {
-  get: function (url, params, success, failure) {
-    return apiAxios('GET', url, params, success, failure)
+  get: function (url, params, responseType, success, failure) {
+    return apiAxios('GET', url, params, responseType, success, failure)
   },
-  post: function (url, params, success, failure) {
-    return apiAxios('POST', url, params, success, failure)
+  post: function (url, params, responseType, success, failure) {
+    return apiAxios('POST', url, params, responseType, success, failure)
   },
-  put: function (url, params, success, failure) {
-    return apiAxios('PUT', url, params, success, failure)
+  put: function (url, params, responseType, success, failure) {
+    return apiAxios('PUT', url, params, responseType, success, failure)
   },
-  delete: function (url, params, success, failure) {
-    return apiAxios('DELETE', url, params, success, failure)
+  delete: function (url, params, responseType, success, failure) {
+    return apiAxios('DELETE', url, params, responseType, success, failure)
   }
 }
   

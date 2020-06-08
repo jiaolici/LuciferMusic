@@ -18,5 +18,13 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
-  render: h => h(App)
+  render: h => h(App),
+  beforeCreate(){
+    try {
+      window.AudioContext = window.AudioContext||window.webkitAudioContext;
+    }
+    catch(e){
+        alert('MLGB 你的浏览器连个Web-Audio-API 都不支持！！')
+    }
+  }
 }).$mount('#app')

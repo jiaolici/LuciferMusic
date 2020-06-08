@@ -4,7 +4,7 @@
             <el-col :span="3">
                 <el-button-group>
                     <el-button icon="el-icon-d-arrow-left" size="small" circle></el-button>
-                    <el-button icon="el-icon-video-play" size="small" circle></el-button>
+                    <el-button icon="el-icon-video-play" @click="play" size="small" circle></el-button>
                     <el-button icon="el-icon-d-arrow-right" size="small" circle></el-button>
                 </el-button-group>
             </el-col>
@@ -53,7 +53,9 @@ export default {
                 maxTime:180,
                 volume:100,
                 artist:"歌手",
-                name:"歌曲"
+                name:"歌曲",
+                audio:new AudioContext(),
+                //bufferSource:music.audio.createBufferSource()
             }
         }
     },
@@ -68,14 +70,35 @@ export default {
             let m = parseInt(it/60)
             let s = parseInt(it%60)
             return (m<10?"0":"")+parseInt(it/60)+":"+(s<10?"0":"")+parseInt(it%60)
-      }
+        },
+        play(){
+            this.ajax.get("audio",{"id":1}, "arraybuffer", r=>{
+                console.log(r);
+                this.music.audio.decodeAudioData(r,function(buffer){
+                    console.log("decode success");
+                    var source = this.music.audio.createBufferSource();
+                    source.buffer = buffer;//  告诉音频源 播放哪一段音频
+                    //console.log(this.music,buffer);
+                }, function(e) {
+                    console.log("decode failed" + e);
+                })
+            });
+        }
     },
     created(){
-        this.ajax.get('music', {'id':1}, r => {
+        this.ajax.get('music', {'id':1}, "json", r => {
             this.music.artist = r.artists[0].name;
             this.music.name = r.name;
             this.music.maxTime = r.duration;
-        })
+        });
+        /*this.ajax.get("audio",{"id":1}, r=>{
+            this.music.audio.decodeAudioData(r,function(buffer){
+                console.log("decode success");
+                this.music.bufferSource.buffer = buffer;
+            }, function(e) {
+                console.log("decode failed" + e);
+            })
+        });*/
     }
 }
 </script>
