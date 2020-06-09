@@ -4,7 +4,7 @@
             <el-col :span="3">
                 <el-button-group>
                     <el-button icon="el-icon-d-arrow-left" size="small" circle></el-button>
-                    <el-button icon="el-icon-video-play" @click="play" size="small" circle></el-button>
+                    <el-button :icon="playIcon" @click="play" size="small" circle></el-button>
                     <el-button icon="el-icon-d-arrow-right" size="small" circle></el-button>
                 </el-button-group>
             </el-col>
@@ -17,11 +17,11 @@
                     <span style="color:#a6a9ad"> -- </span>
                     <el-link type="info">{{music.artist}}</el-link>
                 </div>
-                <el-slider v-model="music.currentTime" :max="music.maxTime" :format-tooltip="formatTime"></el-slider>
+                <el-slider v-model="music.currentTime" :max="music.maxTime" :format-tooltip="formatTime" @change="changeCurrentTime"></el-slider>
             </el-col>
             <el-col :span="4">
                 <div>
-                    <span>00:00</span>
+                    <span>{{currentTimeFormat}}</span>
                     <span> / </span>
                     <span>{{maxTimeFormat}}</span>
                 </div>
@@ -32,7 +32,8 @@
                         v-model="music.volume"
                         vertical
                         height="200px"
-                        :show-tooltip="false">
+                        :show-tooltip="false"
+                        @change="changeVolume">
                     </el-slider>
                     <el-button size="small" slot="reference" circle>
                         <i class="zi zi_volumeup"></i>
@@ -40,6 +41,8 @@
                 </el-popover>        
             </el-col>
         </el-row>
+        <audio ref="audio" :src="music.audioUrl" @timeupdate="onTimeupdate" @ended="onEnded">
+        </audio>
     </div>
 </template>
 
@@ -54,14 +57,24 @@ export default {
                 volume:100,
                 artist:"歌手",
                 name:"歌曲",
-                audio:new AudioContext(),
-                //bufferSource:music.audio.createBufferSource()
+                audioUrl:"http://127.0.0.1:8081/lucifermusic/song?id=1"
             }
         }
     },
     computed:{
         maxTimeFormat:function(){
             return this.formatTime(this.music.maxTime);
+        },
+        currentTimeFormat:function(){
+            return this.formatTime(this.music.currentTime);
+        },
+        playIcon:function(){
+            if(this.music.isPlay){
+                return "el-icon-video-pause"
+            }
+            else{
+                return "el-icon-video-play"
+            }
         }
     },
     methods:{
@@ -72,17 +85,43 @@ export default {
             return (m<10?"0":"")+parseInt(it/60)+":"+(s<10?"0":"")+parseInt(it%60)
         },
         play(){
-            this.ajax.get("audio",{"id":1}, "arraybuffer", r=>{
-                console.log(r);
-                this.music.audio.decodeAudioData(r,function(buffer){
-                    console.log("decode success");
-                    var source = this.music.audio.createBufferSource();
-                    source.buffer = buffer;//  告诉音频源 播放哪一段音频
-                    //console.log(this.music,buffer);
-                }, function(e) {
-                    console.log("decode failed" + e);
-                })
-            });
+            if(this.music.isPlay){
+                this.$refs.audio.pause()
+            }
+            else{
+                this.$refs.audio.play()
+            }
+            this.music.isPlay = !this.music.isPlay
+            // this.ajax.get("audio",{"id":1}, "arraybuffer", r=>{
+            //     console.log(r);
+            //     this.music.audio.decodeAudioData(r,function(buffer){
+            //         console.log("decode success");
+            //         var source = this.music.audio.createBufferSource();
+            //         source.buffer = buffer;//  告诉音频源 播放哪一段音频
+            //         //console.log(this.music,buffer);
+            //     }, function(e) {
+            //         console.log("decode failed" + e);
+            //     })
+            // });
+        },
+        onTimeupdate(){
+            this.music.currentTime = this.$refs.audio.currentTime;
+        },
+        onEnded(){
+            this.music.isPlay = !this.music.isPlay;
+            this.music.currentTime = 0;
+        },
+        changeCurrentTime(index) {
+            if(this.music.isPlay){
+                this.$refs.audio.currentTime = index;
+            }
+            else{
+                this.play();
+                this.$refs.audio.currentTime = index;
+            }
+        },
+        changeVolume(volume){
+            this.$refs.audio.volume = volume/100;
         }
     },
     created(){
@@ -91,6 +130,7 @@ export default {
             this.music.name = r.name;
             this.music.maxTime = r.duration;
         });
+        
         /*this.ajax.get("audio",{"id":1}, r=>{
             this.music.audio.decodeAudioData(r,function(buffer){
                 console.log("decode success");
