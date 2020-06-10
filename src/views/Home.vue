@@ -5,12 +5,7 @@
       </Header>
     </el-header>
     <el-main>
-      <Recommend>
-      </Recommend>
-      <Album>
-      </Album>
-      <TopList>
-      </TopList>
+      <router-view></router-view>
     </el-main>
     <el-footer>Footer</el-footer>
     <Player>
@@ -22,18 +17,16 @@
 <script>
 // @ is an alias to /src
 import Header from '@/components/Header.vue'
-import Recommend from '@/components/Recommend.vue'
-import Album from '@/components/Album.vue'
-import TopList from '@/components/TopList.vue'
+// import Recommend from '@/components/Recommend.vue'
+// import Album from '@/components/Album.vue'
+// import TopList from '@/components/TopList.vue'
 import Player from '@/components/Player.vue'
+//import Index from '@/pages/Index.vue'
 
 export default {
   name: 'Home',
   components: {
     Header,
-    Recommend,
-    Album,
-    TopList,
     Player
   }
 }

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Player2 from '../components/Player2.vue'
+import Index from '../pages/Index.vue'
 
 Vue.use(VueRouter)
 
@@ -9,7 +10,14 @@ Vue.use(VueRouter)
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    children:[
+      {
+        path:'/',
+        name:'Index',
+        component:Index
+      }
+    ]
   },
   {
     path: '/about',
