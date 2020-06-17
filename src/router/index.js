@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Player2 from '../components/Player2.vue'
 import Index from '../pages/Index.vue'
 import Song from '../pages/Song.vue'
+import Album from '../pages/Album.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ Vue.use(VueRouter)
         path:'/song',
         name:'Song',
         component:Song
+      },
+      {
+        path:'/album',
+        name:'Album',
+        component:Album
       }
     ]
   },
