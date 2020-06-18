@@ -39,16 +39,26 @@
                 2007 digitally remastered and expanded two CD edition of the influential Manchester quartet's 1979 debut album. Joy Division's influence on modern music is not only based around the band's unique sound, but also their vision, their personalities and their intense and troubled vocalist, Ian Curtis who committed suicide on the eve of their first tour of the U.S. Disc One features the original album containing 10 tracks including 'Disorder', 'She's Lost Control' and 'Interzone'. Disc Two features 12 tracks recorded live at The Factory in Manchester, April of 1980. Rhino UK.
             </div>
         </div>
+        <SongList>
+        </SongList>
+        <Comment>
+        </Comment>
     </div>
 </template>
 
 <script>
 import album_coverImag from '../images/album_cover.png'
+import SongList from '../components/SongList.vue'
+import Comment from '@/components/Comment.vue'
 export default {
     data(){
         return {
             album_cover:"url(" + album_coverImag + ")"
         }
+    },
+    components:{
+        SongList,
+        Comment
     }
 }
 </script>

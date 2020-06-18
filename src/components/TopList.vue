@@ -15,17 +15,26 @@
                         </div>
                     </div>
                 </div>
-                <el-table :data="tableData" :show-header="false">
+                <el-table 
+                :data="tableData"
+                :show-header="false"
+                @cell-mouse-enter="cellMouseEnter"
+                @cell-mouse-leave="cellMouseLeave">
                     <el-table-column
                         prop="Song">
-                    </el-table-column>
-                    <el-table-column>
-                        <template>
-                            <div>
-                                <el-button icon="el-icon-video-play" size="mini" circle></el-button>
-                                <el-button icon="el-icon-folder-add" size="mini" circle></el-button>
-                            </div>
-                        </template>
+                        <template slot-scope="scope">
+                            <el-row>
+                                <el-col :span="scope.row.songNameWidth" class="songNameCol">
+                                    <span style="line-height:28.5px;">{{ scope.row.Song }}</span>
+                                </el-col>
+                                <el-col :span="scope.row.songBtnWidth">
+                                    <div>
+                                        <el-button icon="el-icon-video-play" size="mini" circle></el-button>
+                                        <el-button icon="el-icon-folder-add" size="mini" circle></el-button>
+                                    </div>
+                                </el-col>
+                            </el-row>
+                         </template>
                     </el-table-column>
                 </el-table>
             </el-col>
@@ -37,15 +46,34 @@
 export default {
     data(){
         return {
-            tableData:[{
-                Song:"Free Bird"
-            }],
+            tableData:[
+                {
+                    Song:"Free Bird111111111111111111",
+                    songNameWidth:24,
+                    songBtnWidth:0
+                }
+            ],
         }
     },
     methods:{
+        cellMouseEnter:function(row, column, cell, event){
+            console.log(row, column, cell, event);
+            row.songNameWidth = 12;
+            row.songBtnWidth = 12;
+        },
+        cellMouseLeave:function(row, column, cell, event){
+            console.log(row, column, cell, event);
+            row.songNameWidth = 24;
+            row.songBtnWidth = 0;
+        },
     }
 }
 </script>
 
 <style scoped>
+.songNameCol{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap
+}
 </style>

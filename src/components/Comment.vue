@@ -20,7 +20,7 @@
         <div style="clear:both"></div>
         <el-divider></el-divider>
         <div v-for="comment in comments" :key="comment.id" style="text-align:left;">
-            <el-avatar shape="square" :size="small" style="float:left"></el-avatar>
+            <el-avatar shape="square" style="float:left"></el-avatar>
             <!-- <div style="clear:both"></div> -->
             <div style="padding-left:50px;position:relative">
                 <el-link :underline="false" type="primary">{{comment.username}}</el-link>
