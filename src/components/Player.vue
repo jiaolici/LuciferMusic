@@ -1,48 +1,53 @@
 <template>
-    <div class="play-container">
-        <el-row>
-            <el-col :span="3">
-                <el-button-group>
-                    <el-button icon="el-icon-d-arrow-left" size="small" circle></el-button>
-                    <el-button :icon="playIcon" @click="play" size="small" circle></el-button>
-                    <el-button icon="el-icon-d-arrow-right" size="small" circle></el-button>
-                </el-button-group>
-            </el-col>
-            <el-col :span="2">
-                <el-avatar shape="square" size="medium">封面</el-avatar>
-            </el-col>
-            <el-col :span="11">
-                <div style="line-height:20px;height:20px">
-                    <el-link type="info">{{music.name}}</el-link>
-                    <span style="color:#a6a9ad"> -- </span>
-                    <el-link type="info">{{music.artist}}</el-link>
-                </div>
-                <el-slider v-model="music.currentTime" :max="music.maxTime" :format-tooltip="formatTime" @change="changeCurrentTime"></el-slider>
-            </el-col>
-            <el-col :span="4">
-                <div>
-                    <span>{{currentTimeFormat}}</span>
-                    <span> / </span>
-                    <span>{{maxTimeFormat}}</span>
-                </div>
-            </el-col>
-            <el-col :span="4">
-                <el-popover placement="top" trigger="click" width="20px" popper-class="volume-popper">
-                    <el-slider
-                        v-model="music.volume"
-                        vertical
-                        height="200px"
-                        :show-tooltip="false"
-                        @change="changeVolume">
-                    </el-slider>
-                    <el-button size="small" slot="reference" circle>
-                        <i class="zi zi_volumeup"></i>
-                    </el-button>
-                </el-popover>        
-            </el-col>
-        </el-row>
-        <audio ref="audio" :src="music.audioUrl" @timeupdate="onTimeupdate" @ended="onEnded">
-        </audio>
+    <div style="position:fixed;width:100%;left:0;bottom:0;right:0;z-index:1000;height:0px">
+        <div class="transitionDiv" @mouseover="showPlayer" @mouseout="hiddenPlayer" ref="playerContent" style="position:absolute;height:70px;left:0;width:100%;top:-10px;">
+            <div style="height:10px"></div>
+            <div class="play-container">
+                <el-row>
+                    <el-col :span="3">
+                        <el-button-group>
+                            <el-button icon="el-icon-d-arrow-left" size="small" circle></el-button>
+                            <el-button :icon="playIcon" @click="play" size="small" circle></el-button>
+                            <el-button icon="el-icon-d-arrow-right" size="small" circle></el-button>
+                        </el-button-group>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-avatar shape="square" size="medium">封面</el-avatar>
+                    </el-col>
+                    <el-col :span="11">
+                        <div style="line-height:20px;height:20px">
+                            <el-link type="info">{{music.name}}</el-link>
+                            <span style="color:#a6a9ad"> -- </span>
+                            <el-link type="info">{{music.artist}}</el-link>
+                        </div>
+                        <el-slider v-model="music.currentTime" :max="music.maxTime" :format-tooltip="formatTime" @change="changeCurrentTime"></el-slider>
+                    </el-col>
+                    <el-col :span="4">
+                        <div>
+                            <span>{{currentTimeFormat}}</span>
+                            <span> / </span>
+                            <span>{{maxTimeFormat}}</span>
+                        </div>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-popover placement="top" trigger="click" width="20px" popper-class="volume-popper">
+                            <el-slider
+                                v-model="music.volume"
+                                vertical
+                                height="200px"
+                                :show-tooltip="false"
+                                @change="changeVolume">
+                            </el-slider>
+                            <el-button size="small" slot="reference" circle>
+                                <i class="zi zi_volumeup"></i>
+                            </el-button>
+                        </el-popover>        
+                    </el-col>
+                </el-row>
+                <audio ref="audio" :src="music.audioUrl" @timeupdate="onTimeupdate" @ended="onEnded">
+                </audio>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -58,7 +63,11 @@ export default {
                 artist:"歌手",
                 name:"歌曲",
                 audioUrl:"http://127.0.0.1:8081/lucifermusic/song?id=1"
-            }
+            },
+            top:-10,
+            status:"show",
+            riseIntervalID:0,
+            downIntervalID:0
         }
     },
     computed:{
@@ -122,6 +131,35 @@ export default {
         },
         changeVolume(volume){
             this.$refs.audio.volume = volume/100;
+        },
+        showPlayer(){
+            // this.$refs.playerContent.style.transitionDelay = "0s";
+            // this.$refs.playerContent.style.top = "-70px";
+            clearInterval(this.downIntervalID)
+            this.riseIntervalID = setInterval(()=>{
+                if(this.top<=-10){
+                    this.status = "rise"
+                    this.top = this.top+10;
+                    this.$refs.playerContent.style.top = this.top+"px";
+                }
+                
+            },0.1)
+        },
+        hiddenPlayer(){
+            // this.$refs.playerContent.style.transitionDelay = "1s";
+            // this.$refs.playerContent.style.top = "-10px";
+            if (this.status=="rise"){
+                return
+            }
+            clearInterval(this.riseIntervalID)
+            this.downIntervalID = setInterval(()=>{
+                if(this.top>=-70){
+                    this.status = "down"
+                    this.top = this.top-10;
+                    this.$refs.playerContent.style.top = this.top+"px";
+                }
+                
+            },0.1)
         }
     },
     created(){
@@ -175,5 +213,9 @@ export default {
 } */
 .volume-popper{
     min-width: 10px !important;
+}
+.transitionDiv{
+    /* transition: top 0.5s;
+    transition-delay: 0s; */
 }
 </style>

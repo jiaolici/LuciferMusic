@@ -41,7 +41,7 @@
                 </el-col>
             </el-row>
         </div>
-        <el-tabs v-model="activeItem" @tab-click="handleClick">
+        <el-tabs v-model="activeItem">
             <el-tab-pane label="热门歌曲" name="songList">
                 <SongList>
                 </SongList>
