@@ -1,6 +1,6 @@
 <template>
     <div style="position:fixed;width:100%;left:0;bottom:0;right:0;z-index:1000;height:0px">
-        <div class="transitionDiv" @mouseover="showPlayer" @mouseout="hiddenPlayer" ref="playerContent" style="position:absolute;height:70px;left:0;width:100%;top:-10px;">
+        <div class="transitionDiv" @mouseenter="showPlayer" @mouseleave="hiddenPlayer" ref="playerContent" style="position:absolute;height:70px;left:0;width:100%;top:-10px;">
             <div style="height:10px"></div>
             <div class="play-container">
                 <el-row>
@@ -65,7 +65,7 @@ export default {
                 audioUrl:"http://127.0.0.1:8081/lucifermusic/song?id=1"
             },
             top:-10,
-            status:"show",
+            status:"hidden",
             riseInterval:null,
             downInterval:null,
             mouseStatus:"leave"
@@ -134,30 +134,31 @@ export default {
             this.$refs.audio.volume = volume/100;
         },
         showPlayer(){
-            this.mouseStatus = "enter"
             // this.$refs.playerContent.style.transitionDelay = "0s";
             // this.$refs.playerContent.style.top = "-70px";
+            this.mouseStatus = "enter";
+            //防止在播放条上升时再次触发
+            if (this.status=="rise"){
+                return
+            }
             clearInterval(this.downInterval)
+            this.status = "rise";
             this.riseInterval = setInterval(()=>{
-                console.log("xxx");
-                if(this.top<-10){
-                    this.status = "rise";
-                    this.top = this.top-10;
+                if(this.top>-70){
+                    if(this.top%5!=0){
+                        this.top = Math.round(this.top/5)*5
+                    }
+                    this.top = this.top-5;
                     this.$refs.playerContent.style.top = this.top+"px";
-                    console.log("xxx");
                 }
                 else{
-                    console.log(this.mouseStatus);
                     this.status = "show";
-                    
                     clearInterval(this.riseInterval);
-                    console.log(this.mouseStatus);
                     if(this.mouseStatus=="leave"){
                         this.hiddenPlayer()
                     }
                 }
-            },100)
-            
+            },10)
         },
         hiddenPlayer(){
             // this.$refs.playerContent.style.transitionDelay = "1s";
@@ -168,17 +169,16 @@ export default {
             }
             clearInterval(this.riseInterval)
             this.downInterval = setInterval(()=>{
-                if(this.top>-70){
+                if(this.top<-10){
                     this.status = "down"
-                    this.top = this.top+10;
+                    this.top = this.top+1;
                     this.$refs.playerContent.style.top = this.top+"px";
                 }
                 else{
                     this.status = "hidden"
                     clearInterval(this.downInterval);
                 }
-            },100)
-            
+            },10)
         }
     },
     created(){
