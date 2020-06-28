@@ -66,8 +66,9 @@ export default {
             },
             top:-10,
             status:"show",
-            riseIntervalID:0,
-            downIntervalID:0
+            riseInterval:null,
+            downInterval:null,
+            mouseStatus:"leave"
         }
     },
     computed:{
@@ -133,33 +134,51 @@ export default {
             this.$refs.audio.volume = volume/100;
         },
         showPlayer(){
+            this.mouseStatus = "enter"
             // this.$refs.playerContent.style.transitionDelay = "0s";
             // this.$refs.playerContent.style.top = "-70px";
-            clearInterval(this.downIntervalID)
-            this.riseIntervalID = setInterval(()=>{
-                if(this.top<=-10){
-                    this.status = "rise"
-                    this.top = this.top+10;
+            clearInterval(this.downInterval)
+            this.riseInterval = setInterval(()=>{
+                console.log("xxx");
+                if(this.top<-10){
+                    this.status = "rise";
+                    this.top = this.top-10;
                     this.$refs.playerContent.style.top = this.top+"px";
+                    console.log("xxx");
                 }
-                
-            },0.1)
+                else{
+                    console.log(this.mouseStatus);
+                    this.status = "show";
+                    
+                    clearInterval(this.riseInterval);
+                    console.log(this.mouseStatus);
+                    if(this.mouseStatus=="leave"){
+                        this.hiddenPlayer()
+                    }
+                }
+            },100)
+            
         },
         hiddenPlayer(){
             // this.$refs.playerContent.style.transitionDelay = "1s";
             // this.$refs.playerContent.style.top = "-10px";
+            this.mouseStatus = "leave"
             if (this.status=="rise"){
                 return
             }
-            clearInterval(this.riseIntervalID)
-            this.downIntervalID = setInterval(()=>{
-                if(this.top>=-70){
+            clearInterval(this.riseInterval)
+            this.downInterval = setInterval(()=>{
+                if(this.top>-70){
                     this.status = "down"
-                    this.top = this.top-10;
+                    this.top = this.top+10;
                     this.$refs.playerContent.style.top = this.top+"px";
                 }
-                
-            },0.1)
+                else{
+                    this.status = "hidden"
+                    clearInterval(this.downInterval);
+                }
+            },100)
+            
         }
     },
     created(){
