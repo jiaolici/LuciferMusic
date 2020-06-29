@@ -68,6 +68,7 @@ export default {
             status:"hidden",
             riseInterval:null,
             downInterval:null,
+            downTimeout:null,
             mouseStatus:"leave"
         }
     },
@@ -142,6 +143,7 @@ export default {
                 return
             }
             clearInterval(this.downInterval)
+            clearTimeout(this.downTimeout)
             this.status = "rise";
             this.riseInterval = setInterval(()=>{
                 if(this.top>-70){
@@ -168,17 +170,22 @@ export default {
                 return
             }
             clearInterval(this.riseInterval)
-            this.downInterval = setInterval(()=>{
-                if(this.top<-10){
-                    this.status = "down"
-                    this.top = this.top+1;
-                    this.$refs.playerContent.style.top = this.top+"px";
+            //this.status = "waitDown"
+            this.downTimeout = setTimeout(()=>{
+                if(this.mouseStatus=="leave"){
+                    this.downInterval = setInterval(()=>{
+                        if(this.top<-10){
+                            this.status = "down"
+                            this.top = this.top+1;
+                            this.$refs.playerContent.style.top = this.top+"px";
+                        }
+                        else{
+                            this.status = "hidden"
+                            clearInterval(this.downInterval);
+                        }
+                    },10)
                 }
-                else{
-                    this.status = "hidden"
-                    clearInterval(this.downInterval);
-                }
-            },10)
+            },500)
         }
     },
     created(){

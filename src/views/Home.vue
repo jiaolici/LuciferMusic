@@ -24,7 +24,7 @@ import Footer from '@/components/Footer.vue'
 // import Recommend from '@/components/Recommend.vue'
 // import Album from '@/components/Album.vue'
 // import TopList from '@/components/TopList.vue'
-import Player from '@/components/Player.vue'
+import Player from '@/components/Player2.vue'
 //import Index from '@/pages/Index.vue'
 
 export default {
