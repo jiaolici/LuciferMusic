@@ -45,6 +45,7 @@ export default {
             songList:[
                 {
                     name:"Disorder",
+                    albumName:"Unknown Pleasures",
                     artist:"Joy Division",
                     duration:"03:32",
                     songNameWidth:24,
@@ -52,6 +53,7 @@ export default {
                 },
                 {
                     name:"Day Of The Lords sa dasdasd adsasda sdasdasdasdasdasdasd",
+                    albumName:"Unknown Pleasures",
                     artist:"Joy Division1111111111111111111111111111111",
                     duration:"04:49",
                     songNameWidth:24,
@@ -59,6 +61,7 @@ export default {
                 },
                 {
                     name:"Candidate",
+                    albumName:"Unknown Pleasures",
                     artist:"Joy Division",
                     duration:"03:04",
                     songNameWidth:24,
@@ -78,7 +81,11 @@ export default {
             row.songNameWidth = 24;
             row.songBtnWidth = 0;
         },
-    }
+    },
+    props:{
+        type:String
+}
+
 }
 </script>
 
