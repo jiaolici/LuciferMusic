@@ -83,8 +83,16 @@ export default {
         },
     },
     props:{
-        type:String
-}
+        showtype:{
+            type:String,
+            default:"playList",
+            validator: function (value) {
+                // 这个值必须匹配下列字符串中的一个
+                return ['playList', 'album', 'listenedRank'].indexOf(value) !== -1
+            }
+        }
+        
+    }
 
 }
 </script>
