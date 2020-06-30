@@ -7,6 +7,7 @@ import Song from '../pages/Song.vue'
 import Album from '../pages/Album.vue'
 import Artist from '../pages/Artist.vue'
 import User from '../pages/User.vue'
+import PlayList from '../pages/PlayList.vue'
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,11 @@ Vue.use(VueRouter)
         path:'/user',
         name:'User',
         component:User
+      },
+      {
+        path:'/playlist',
+        name:'PlayList',
+        component:PlayList
       }
     ]
   },

@@ -43,7 +43,7 @@
         </div>
         <el-tabs v-model="activeItem">
             <el-tab-pane label="热门歌曲" name="songList">
-                <SongList>
+                <SongList showtype="artist">
                 </SongList>
             </el-tab-pane>
             <el-tab-pane label="所有专辑" name="allAlbum">

@@ -28,7 +28,14 @@
             <el-table-column
                 prop="artist"
                 label="歌手"
-                :show-overflow-tooltip="true">
+                :show-overflow-tooltip="true"
+                v-if="showtype != 'artist'">
+            </el-table-column>
+            <el-table-column
+                prop="albumName"
+                label="专辑"
+                :show-overflow-tooltip="true"
+                v-if="showtype != 'album'">
             </el-table-column>
             <el-table-column
                 prop="duration"
@@ -88,7 +95,7 @@ export default {
             default:"playList",
             validator: function (value) {
                 // 这个值必须匹配下列字符串中的一个
-                return ['playList', 'album', 'listenedRank'].indexOf(value) !== -1
+                return ['playList', 'album', 'artist'].indexOf(value) !== -1
             }
         }
         
