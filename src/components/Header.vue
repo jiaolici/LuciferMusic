@@ -20,8 +20,19 @@
             </el-input>
         </el-col>
         <el-col :span="4">
-            <el-avatar size="medium"> user </el-avatar>
+            <el-avatar size="medium" @click="dialogVisible = true"> user </el-avatar>
         </el-col>
+        <el-dialog
+            title="提示"
+            :visible.sync="dialogVisible"
+            width="30%"
+            :before-close="handleClose">
+            <span>这是一段信息</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </el-row>
 </template>
 
@@ -29,7 +40,8 @@
   export default {
     data() {
       return {
-          inputText:""
+          inputText:"",
+          dialogVisible: true
       };
     },
     methods: {

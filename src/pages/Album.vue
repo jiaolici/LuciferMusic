@@ -9,7 +9,7 @@
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
                         歌手：
-                        <el-link :underline="false" style="vertical-align:baseline;">Joy Division</el-link>
+                        <router-link to="artist" tag="span"><el-link :underline="false" style="vertical-align:baseline;">Joy Division</el-link></router-link>
                     </div>
                 </el-col>
                 <el-col :span="12">

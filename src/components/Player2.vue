@@ -18,7 +18,7 @@
                         <div style="line-height:20px;height:20px">
                             <el-link type="info">{{music.name}}</el-link>
                             <span style="color:#a6a9ad"> -- </span>
-                            <el-link type="info">{{music.artist}}</el-link>
+                            <router-link to="artist" tag="span"><el-link type="info">{{music.artist}}</el-link></router-link>
                         </div>
                         <el-slider v-model="music.currentTime" :max="music.maxTime" :format-tooltip="formatTime" @change="changeCurrentTime"></el-slider>
                     </el-col>
