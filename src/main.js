@@ -16,6 +16,9 @@ Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
+//使用vuex
+import store from './store'
+
 new Vue({
   router,
   render: h => h(App),
@@ -26,5 +29,6 @@ new Vue({
     catch(e){
         alert('MLGB 你的浏览器连个Web-Audio-API 都不支持！！')
     }
-  }
+  },
+  store
 }).$mount('#app')
