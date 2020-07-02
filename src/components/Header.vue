@@ -21,56 +21,51 @@
         </el-col>
         <el-col :span="2">
             <router-link v-if="isLogin" to="user" tag="a"><el-avatar size="medium" > user </el-avatar></router-link>
-            <el-link v-else :underline="false" @click="dialogVisible = true">登录</el-link>
+            <el-link v-else :underline="false" @click="loginDialogVisible = true">登录</el-link>
         </el-col>
         <el-dialog
-            title="提示"
-            :visible.sync="dialogVisible"
+            :visible.sync="loginDialogVisible"
             width="400px"
-            :before-close="handleClose"
             custom-class = "loginDialog">
-            <el-form ref="form" :model="loginForm" size="small" style="padding:20px 60px">
-                <el-form-item>
-                    <el-input v-model="loginForm.email" placeholder="邮箱"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-input v-model="loginForm.password" placeholder="密码" show-password></el-input>
-                </el-form-item>
-                <div style="line-height:20px">
-                    <el-link :underline="false" style="float:left">忘记密码</el-link>
-                    <el-link :underline="false" style="float:right">注册</el-link>
-                </div>
-            </el-form>
+            <component v-bind:is="currentForm" v-on:forgetPass="showForm('verification')"></component>
             <template slot="title">
                 <div>
-                <h4 style="margin:0;line-height:40px">登录</h4>
+                <h4 style="margin:0;line-height:40px">{{title}}</h4>
                 </div>
             </template>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="dialogVisible = false" size="small">登录</el-button>
-            </span>
         </el-dialog>
     </el-row>
 </template>
 
 <script>
-  export default {
+import loginForm from './loginForm.vue'
+import verificationForm from './verificationForm.vue'
+export default {
     data() {
-      return {
-          inputText:"",
-          dialogVisible: false,
-          isLogin:false,
-          loginForm:{
-              email:""
-          }
-      };
+        return {
+            inputText:"",
+            loginDialogVisible: false,
+            isLogin:false,
+            currentForm:"loginForm",
+            title:"登录"
+        };
     },
     methods: {
-      handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-      }
+        handleSelect(key, keyPath) {
+            console.log(key, keyPath);
+        },
+        showForm(formName){
+            if(formName == "verification"){
+                this.currentForm = "verificationForm"
+                this.title = "注册"
+            }
+        }
+    },
+    components:{
+        loginForm,
+        verificationForm
     }
-  }
+}
 </script>
 
 <style scoped>
@@ -93,10 +88,6 @@ h1{
 .loginDialog>.el-dialog__header{
     background-color: #303133;
     padding: 0;
-}
-.loginDialog>.el-dialog__footer{
-    text-align: center;
-    padding: 0 60px;
 }
 .loginDialog>.el-dialog__body{
     padding: 0;
