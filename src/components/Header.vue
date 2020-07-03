@@ -26,8 +26,9 @@
         <el-dialog
             :visible.sync="loginDialogVisible"
             width="400px"
-            custom-class = "loginDialog">
-            <component v-bind:is="currentForm" v-on:forgetPass="showForm('verification')"></component>
+            custom-class = "loginDialog"
+            @closed = "changeForm('login')">
+            <component v-bind:is="currentForm" v-on:changeForm="changeForm"></component>
             <template slot="title">
                 <div>
                 <h4 style="margin:0;line-height:40px">{{title}}</h4>
@@ -40,6 +41,7 @@
 <script>
 import loginForm from './loginForm.vue'
 import verificationForm from './verificationForm.vue'
+import PasswordForm from './PasswordForm'
 export default {
     data() {
         return {
@@ -54,16 +56,29 @@ export default {
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
         },
-        showForm(formName){
-            if(formName == "verification"){
+        changeForm(formName){
+            if(formName == "register"){
                 this.currentForm = "verificationForm"
                 this.title = "注册"
+            }
+            else if(formName == "forgetPass"){
+                this.currentForm = "verificationForm"
+                this.title = "忘记密码"
+            }
+            else if(formName == "login"){
+                this.currentForm = "loginForm"
+                this.title = "登录"
+            }
+            else if(formName == "password"){
+                this.currentForm = "PasswordForm"
+                this.title = "密码"
             }
         }
     },
     components:{
         loginForm,
-        verificationForm
+        verificationForm,
+        PasswordForm
     }
 }
 </script>

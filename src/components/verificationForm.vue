@@ -1,4 +1,5 @@
 <template>
+<div>
     <el-form ref="form" :model="verificationForm" size="small" style="padding:20px 60px">
         <el-form-item>
             <el-input v-model="verificationForm.email" placeholder="邮箱"></el-input>
@@ -9,8 +10,12 @@
                 <el-col :span="6"><el-button type="primary" size="small">获取</el-button></el-col>
             </el-row>
         </el-form-item>
-        <el-button type="primary" size="small">下一步</el-button>
+        <el-button type="primary" size="small" @click="$emit('changeForm','password')">下一步</el-button>
     </el-form>
+    <div style="height:32px;background-color:#303133;line-height:30px;font-size:14px">
+        <el-link :underline="false" @click="$emit('changeForm','login')">返回登录</el-link>
+    </div>
+</div>
 </template>
 
 <script>
