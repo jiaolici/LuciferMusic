@@ -9,13 +9,15 @@
                 @select="handleSelect"
                 background-color="#303133"
                 text-color="#fff"
-                active-text-color="#ffd04b">
-                <el-menu-item index="1">首页</el-menu-item>
-                <el-menu-item index="2">我的音乐</el-menu-item>
+                active-text-color="#ffd04b"
+                :router="true">
+                <el-menu-item index="1" :route="{name:'Index'}">首页</el-menu-item>
+                <el-menu-item v-if="this.$store.state.loginUser" index="2" :route="{name:'User'}">我的音乐</el-menu-item>
+                <el-menu-item v-else index="2" :route="{name:'User'}" disabled>我的音乐</el-menu-item>
             </el-menu>
         </el-col>
         <el-col :span="6">
-            <el-input placeholder="请输入内容" size="mini" v-model="inputText">
+            <el-input placeholder="请输入内容" size="mini" v-model="inputText" @keyup.enter.native="searchHandle">
                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
             </el-input>
         </el-col>
@@ -72,6 +74,14 @@ export default {
             else if(formName == "password"){
                 this.currentForm = "PasswordForm"
                 this.title = "密码"
+            }
+        },
+        searchHandle(){
+            if(this.inputText==""){
+                this.$message({showClose:true,center: true,duration:1000,message:'请输入内容'});
+            }
+            else{
+                this.$router.push({name:"Search"})
             }
         }
     },

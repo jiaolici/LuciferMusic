@@ -9,6 +9,7 @@ import Artist from '../pages/Artist.vue'
 import User from '../pages/User.vue'
 import PlayList from '../pages/PlayList.vue'
 import UserUpdate from '../pages/UserUpdate.vue'
+import Search from '../pages/Search.vue'
 
 Vue.use(VueRouter)
 
@@ -52,6 +53,11 @@ Vue.use(VueRouter)
         path:'/userupdate',
         name:'UserUpdate',
         component:UserUpdate
+      },
+      {
+        path:'/search',
+        name:'Search',
+        component:Search
       }
     ]
   },

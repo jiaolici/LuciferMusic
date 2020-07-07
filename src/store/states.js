@@ -1,5 +1,5 @@
 const state = {
-    loginUser:{},
+    loginUser:null,
     player:{
         playingList:[],
         playingSong:null,
