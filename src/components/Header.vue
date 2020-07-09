@@ -22,7 +22,15 @@
             </el-input>
         </el-col>
         <el-col :span="2">
-            <router-link v-if="isLogin" to="user" tag="a"><el-avatar size="medium" > user </el-avatar></router-link>
+            <!-- <router-link v-if="this.$store.state.loginUser" to="user" tag="a"><el-avatar size="medium" > user </el-avatar></router-link> -->
+            <el-dropdown v-if="this.$store.state.loginUser" trigger="hover" style="line-height:10px">
+                <el-avatar icon="el-icon-user-solid" size="medium"></el-avatar>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item icon="el-icon-user">个人主页</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-setting">个人设置</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-circle-close">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
             <el-link v-else :underline="false" @click="loginDialogVisible = true">登录</el-link>
         </el-col>
         <el-dialog
@@ -30,7 +38,7 @@
             width="400px"
             custom-class = "loginDialog"
             @closed = "changeForm('login')">
-            <component v-bind:is="currentForm" v-on:changeForm="changeForm"></component>
+            <component v-bind:is="currentForm" v-on:changeForm="changeForm" v-on:closeDialog = "loginDialogVisible=false"></component>
             <template slot="title">
                 <div>
                 <h4 style="margin:0;line-height:40px">{{title}}</h4>

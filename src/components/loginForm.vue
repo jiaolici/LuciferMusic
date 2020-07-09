@@ -39,13 +39,20 @@ export default {
                     return false
                 }
                 else{
-                    this.ajax.post('login',{
+                    this.ajax.post('login/',{
                         username:this.loginForm.email,
                         password:this.loginForm.password},
                         null,(data)=>{
-                            console.log(data)
+                            window.localStorage.setItem('token', data.token)
+                            let user = {id:data.id,username:data.username}
+                            if(!this.$store.state.loginUser){
+                                this.$store.commit('login',user)
+                            }
+                            this.$emit('closeDialog')
                         },(data)=>{
-                            console.log(data)
+                            if(data.non_field_errors=='Unable to log in with provided credentials.'){
+                                this.$message({showClose:true,center: true,duration:1000,message:'用户名密码错误',type:"error"});
+                            }
                         })
                 }
             })

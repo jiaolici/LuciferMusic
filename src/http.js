@@ -80,6 +80,9 @@ function apiAxios (method, url, params, responseType, success, failure) {
         duration:1000
       })
     }
+    else{
+      failure(res.data)
+    }
     // if (err) {
     //   window.alert('api error, HTTP CODE: ' + res.status)
     // }
