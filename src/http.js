@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {Message} from "element-ui";
 // 配置API接口地址
-var root = 'http://127.0.0.1:8081/lucifermusic/';
+var root = 'http://127.0.0.1:9000/';
 
 // 自定义判断元素类型JS
 function toType (obj) {
@@ -32,6 +33,15 @@ function filterNull (o) {
   另外，不同的项目的处理方法也是不一致的，这里出错就是简单的alert
 */
 
+//请求拦截器：添加token
+axios.interceptors.request.use((config)=>{
+  let token = window.localStorage.getItem("token")
+  if(token){
+    config.headers['token'] = token
+  }
+  return config
+})
+
 function apiAxios (method, url, params, responseType, success, failure) {
   if (params) {
     params = filterNull(params)
@@ -61,9 +71,18 @@ function apiAxios (method, url, params, responseType, success, failure) {
   .catch(function (err) {
     console.log(err);
     let res = err.response
-    if (err) {
-      window.alert('api error, HTTP CODE: ' + res.status)
+    if(!res){
+      Message({
+        message: '服务器连接失败',
+        type: 'error',
+        showClose: true,
+        center:true,
+        duration:1000
+      })
     }
+    // if (err) {
+    //   window.alert('api error, HTTP CODE: ' + res.status)
+    // }
   })
 }
 
