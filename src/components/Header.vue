@@ -23,12 +23,12 @@
         </el-col>
         <el-col :span="2">
             <!-- <router-link v-if="this.$store.state.loginUser" to="user" tag="a"><el-avatar size="medium" > user </el-avatar></router-link> -->
-            <el-dropdown v-if="this.$store.state.loginUser" trigger="hover" style="line-height:10px">
+            <el-dropdown @command="handleCommand" v-if="this.$store.state.loginUser" trigger="hover" style="line-height:10px">
                 <el-avatar icon="el-icon-user-solid" size="medium"></el-avatar>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item icon="el-icon-user">个人主页</el-dropdown-item>
-                    <el-dropdown-item icon="el-icon-setting">个人设置</el-dropdown-item>
-                    <el-dropdown-item icon="el-icon-circle-close">退出登录</el-dropdown-item>
+                    <el-dropdown-item command="userInfo" icon="el-icon-user">个人主页</el-dropdown-item>
+                    <el-dropdown-item command="userSetting" icon="el-icon-setting">个人设置</el-dropdown-item>
+                    <el-dropdown-item command="logout" icon="el-icon-circle-close">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
             <el-link v-else :underline="false" @click="loginDialogVisible = true">登录</el-link>
@@ -90,6 +90,19 @@ export default {
             }
             else{
                 this.$router.push({name:"Search"})
+            }
+        },
+        handleCommand(command){
+            if(command == "userInfo"){
+                this.$router.push({name:"User"})
+            }
+            else if(command == "userSetting"){
+                this.$router.push({name:"UserUpdate"})
+            }
+            else if(command == "logout"){
+                window.localStorage.removeItem("token")
+                this.$store.commit('logout')
+                this.$router.push({name:"Index"})
             }
         }
     },

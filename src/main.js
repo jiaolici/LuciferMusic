@@ -32,9 +32,10 @@ new Vue({
   },
   created(){
     let token = window.localStorage.getItem('token')
+    let that = this
     let verify = {
       then:function(resolve,reject){
-        this.ajax.post('verify/',{'token':token},null,(data)=>{
+        that.ajax.post('verify/',{'token':token},null,(data)=>{
           //token验证成功
           if(data.token){
             resolve("refreshToken")
@@ -54,12 +55,12 @@ new Vue({
     }
     let refresh = {
       then:function(resolve,reject){
-          this.ajax.post('refresh/',{'token':token},null,(data)=>{
+          that.ajax.post('refresh/',{'token':token},null,(data)=>{
               //刷新token成功
               window.localStorage.setItem('token', data.token)
               let user = {id:data.id,username:data.username}
-              if(!this.$store.state.loginUser){
-                  this.$store.commit('login',user)
+              if(!that.$store.state.loginUser){
+                  that.$store.commit('login',user)
               }
           },(data)=>{
               //刷新token失败
