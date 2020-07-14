@@ -38,7 +38,7 @@
             width="400px"
             custom-class = "loginDialog"
             @closed = "changeForm('login')">
-            <component v-bind:is="currentForm" v-on:changeForm="changeForm" v-on:closeDialog = "loginDialogVisible=false"></component>
+            <component v-bind:is="currentForm" v-on:changeForm="changeForm" v-on:closeDialog = "loginDialogVisible=false" :type="dialogType"></component>
             <template slot="title">
                 <div>
                 <h4 style="margin:0;line-height:40px">{{title}}</h4>
@@ -59,7 +59,8 @@ export default {
             loginDialogVisible: false,
             isLogin:false,
             currentForm:"loginForm",
-            title:"登录"
+            title:"登录",
+            dialogType:"login"
         };
     },
     methods: {
@@ -67,21 +68,30 @@ export default {
             console.log(key, keyPath);
         },
         changeForm(formName){
-            if(formName == "register"){
+            if(formName == "regVerify"){
                 this.currentForm = "verificationForm"
+                this.dialogType = "regVerify"
                 this.title = "注册"
             }
-            else if(formName == "forgetPass"){
+            else if(formName == "forgetPassVerify"){
                 this.currentForm = "verificationForm"
+                this.dialogType = "forgetPassVerify"
                 this.title = "忘记密码"
             }
             else if(formName == "login"){
                 this.currentForm = "loginForm"
+                this.dialogType = "login"
                 this.title = "登录"
             }
-            else if(formName == "password"){
+            else if(formName == "regPassword"){
                 this.currentForm = "PasswordForm"
-                this.title = "密码"
+                this.dialogType = "regPassword"
+                this.title = "注册密码"
+            }
+            else if(formName == "resetPassword"){
+                this.currentForm = "PasswordForm"
+                this.dialogType = "resetPassword"
+                this.title = "重置密码"
             }
         },
         searchHandle(){
