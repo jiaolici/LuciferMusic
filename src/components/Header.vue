@@ -24,7 +24,7 @@
         <el-col :span="2">
             <!-- <router-link v-if="this.$store.state.loginUser" to="user" tag="a"><el-avatar size="medium" > user </el-avatar></router-link> -->
             <el-dropdown @command="handleCommand" v-if="this.$store.state.loginUser" trigger="hover" style="line-height:10px">
-                <el-avatar icon="el-icon-user-solid" size="medium"></el-avatar>
+                <el-avatar icon="el-icon-user-solid" :src="this.$store.state.loginUser.avatar" size="medium"></el-avatar>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item command="userInfo" icon="el-icon-user">个人主页</el-dropdown-item>
                     <el-dropdown-item command="userSetting" icon="el-icon-setting">个人设置</el-dropdown-item>

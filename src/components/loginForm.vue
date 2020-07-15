@@ -44,7 +44,7 @@ export default {
                         password:this.loginForm.password},
                         null,(data)=>{
                             window.localStorage.setItem('token', data.token)
-                            let user = {id:data.id,username:data.username}
+                            let user = data.user
                             if(!this.$store.state.loginUser){
                                 this.$store.commit('login',user)
                             }

@@ -58,7 +58,7 @@ new Vue({
           that.ajax.post('refresh/',{'token':token},null,(data)=>{
               //刷新token成功
               window.localStorage.setItem('token', data.token)
-              let user = {id:data.id,username:data.username}
+              let user = data.user
               if(!that.$store.state.loginUser){
                   that.$store.commit('login',user)
               }
