@@ -1,12 +1,12 @@
 <template>
-    <div style="text-align:left;width:460px;margin:100px auto 180px">
+    <div v-if="this.$store.state.loginUser" style="text-align:left;width:460px;margin:100px auto 180px">
         <h2 style="text-align:center">个人信息</h2>
         <el-upload
             action=""
             :show-file-list="false"
             style="border-radius:50%;text-align:center;margin-bottom:20px">
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-            <el-avatar :size="100"> user </el-avatar>
+            <el-avatar :src="this.$store.state.loginUser.avatar" :size="100"> user </el-avatar>
         </el-upload>
         <el-form ref="form" :model="userInfo" label-width="80px" size="small">
             <el-form-item label="用户名">
@@ -49,9 +49,12 @@
             </el-form-item>
         </el-form>
     </div>
+    <Error v-else>
+    </Error>
 </template>
 
 <script>
+import Error from '../components/Error.vue'
 export default {
     data(){
         return {
@@ -63,6 +66,17 @@ export default {
                 area:""
             }
         }
+    },
+    components:{
+        Error
+    },
+    beforeMount:function(){
+        console.log(this.$store.state.loginUser)
+        this.userInfo.name = this.$store.state.loginUser.username
+        this.userInfo.gender = this.$store.state.loginUser.gender
+        this.userInfo.birthday = this.$store.state.loginUser.birthday
+        this.userInfo.introduction = this.$store.state.loginUser.introduction
+        this.userInfo.area = this.$store.state.loginUser.area
     }
 }
 </script>
