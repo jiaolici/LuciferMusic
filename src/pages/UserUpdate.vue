@@ -10,7 +10,7 @@
         </el-upload>
         <el-form ref="form" :model="userInfo" label-width="80px" size="small">
             <el-form-item label="用户名">
-                <el-input v-model="userInfo.name" placeholder="用户名"></el-input>
+                <el-input v-model="userInfo.username" placeholder="用户名"></el-input>
             </el-form-item>
             <el-form-item label="签名">
                 <el-input
@@ -38,13 +38,13 @@
             </el-form-item>
             <el-form-item label="地区">
                 <el-cascader
-                    v-model="userInfo.area"
+                    v-model="userInfo.city"
                     :options="this.$store.state.globalSetting.areas"
                     style="width:100%">
                 </el-cascader>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary">保存</el-button>
+                <el-button type="primary" @click="saveHandle">保存</el-button>
                 <el-button>取消</el-button>
             </el-form-item>
         </el-form>
@@ -58,26 +58,28 @@ import Error from '../components/Error.vue'
 export default {
     data(){
         return {
-            userInfo:{
-                name:"",
-                gender:"",
-                birthday:"",
-                introduction:"",
-                area:""
-            }
+            
         }
     },
     components:{
         Error
     },
-    beforeMount:function(){
-        console.log(this.$store.state.loginUser)
-        this.userInfo.name = this.$store.state.loginUser.username
-        this.userInfo.gender = this.$store.state.loginUser.gender
-        this.userInfo.birthday = this.$store.state.loginUser.birthday
-        this.userInfo.introduction = this.$store.state.loginUser.introduction
-        this.userInfo.area = this.$store.state.loginUser.area
-    }
+    methods:{
+        saveHandle:function(){
+            console.log(this.user)
+        }
+    },
+    computed:{
+        userInfo:{
+            get(){
+                return this.$store.state.loginUser
+            },
+            set(v){
+                this.user = v.loginUser
+                console.log(this)
+            }
+        }
+    },
 }
 </script>
 
