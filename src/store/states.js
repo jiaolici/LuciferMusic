@@ -8,19 +8,19 @@ const state = {
     globalSetting:{
         areas:[
             {
-                value:"四川省",
-                label:"四川省",
+                value:"四川",
+                label:"四川",
                 children:[
-                    {value:"成都市",label:"成都市"},
-                    {value:"达州市",label:"达州市"},
+                    {value:"成都",label:"成都"},
+                    {value:"达州",label:"达州"},
                 ]
             },
             {
-                value:"湖北省",
-                label:"湖北省",
+                value:"湖北",
+                label:"湖北",
                 children:[
-                    {value:"武汉市",label:"武汉市"},
-                    {value:"襄阳市",label:"襄阳市"},
+                    {value:"武汉",label:"武汉"},
+                    {value:"襄阳",label:"襄阳"},
                 ]
             },
         ]

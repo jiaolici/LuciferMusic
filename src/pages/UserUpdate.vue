@@ -4,9 +4,16 @@
         <el-upload
             action=""
             :show-file-list="false"
+            :auto-upload="false"
+            :multiple="false"
+            :limit="1"
+            :on-change="selectAvatar"
+            :http-request="uploadInfo"
+            ref="upload"
+            accept="image/jpeg,image/png"
             style="border-radius:50%;text-align:center;margin-bottom:20px">
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-            <el-avatar :src="this.$store.state.loginUser.avatar" :size="100"> user </el-avatar>
+            <el-avatar :src="userInfo.avatar" :size="100"> user </el-avatar>
         </el-upload>
         <el-form ref="form" :model="userInfo" label-width="80px" size="small">
             <el-form-item label="用户名">
@@ -58,7 +65,14 @@ import Error from '../components/Error.vue'
 export default {
     data(){
         return {
-            
+            userInfo:{
+                username:"",
+                introduction:"",
+                gender:"",
+                birthday:"",
+                city:"",
+                avatar:""
+            }
         }
     },
     components:{
@@ -66,20 +80,33 @@ export default {
     },
     methods:{
         saveHandle:function(){
-            console.log(this.user)
+            this.$refs.upload.submit()
+        },
+        uploadInfo:function(params){
+            console.log(params)
+        },
+        loadUserData:function(){
+            this.userInfo.username = this.$store.state.loginUser.username
+            this.userInfo.introduction = this.$store.state.loginUser.introduction
+            this.userInfo.gender = this.$store.state.loginUser.gender
+            this.userInfo.birthday = this.$store.state.loginUser.birthday
+            this.userInfo.city = this.$store.state.loginUser.city
+            this.userInfo.avatar = this.$store.state.loginUser.avatar
+        },
+        selectAvatar:function(file, fileList){
+            console.log(file,fileList)
+            this.userInfo.avatar = URL.createObjectURL(file.raw)
+            console.log(URL.createObjectURL(file.raw))
         }
     },
-    computed:{
-        userInfo:{
-            get(){
-                return this.$store.state.loginUser
-            },
-            set(v){
-                this.user = v.loginUser
-                console.log(this)
-            }
+    created(){
+        if(this.$store.state.loginUser){
+            this.loadUserData()
         }
-    },
+        else{
+            this.$EventBus.$on("login",this.loadUserData)
+        }
+    }
 }
 </script>
 

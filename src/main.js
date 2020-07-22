@@ -19,6 +19,9 @@ Vue.config.productionTip = false
 //使用vuex
 import store from './store'
 
+//EventBus
+Vue.prototype.$EventBus = new Vue()
+
 new Vue({
   router,
   render: h => h(App),
@@ -62,6 +65,7 @@ new Vue({
               if(!that.$store.state.loginUser){
                   that.$store.commit('login',user)
               }
+              that.$EventBus.$emit("login");
           },(data)=>{
               //刷新token失败
               if(data.non_field_errors[0]=="Signature has expired."){
