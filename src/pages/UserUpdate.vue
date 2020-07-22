@@ -6,14 +6,14 @@
             :show-file-list="false"
             :auto-upload="false"
             :multiple="false"
-            :limit="1"
             :on-change="selectAvatar"
             :http-request="uploadInfo"
             ref="upload"
             accept="image/jpeg,image/png"
             style="border-radius:50%;text-align:center;margin-bottom:20px">
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-            <el-avatar :src="userInfo.avatar" :size="100"> user </el-avatar>
+            <!-- <el-avatar :src="userInfo.avatar" fit="cover" :size="100"> user </el-avatar> -->
+            <el-image style="width: 100px; height: 100px; border-radius:50%" :src="userInfo.avatar" fit="cover"></el-image>
         </el-upload>
         <el-form ref="form" :model="userInfo" label-width="80px" size="small">
             <el-form-item label="用户名">
@@ -66,6 +66,7 @@ export default {
     data(){
         return {
             userInfo:{
+                id:"",
                 username:"",
                 introduction:"",
                 gender:"",
@@ -84,8 +85,17 @@ export default {
         },
         uploadInfo:function(params){
             console.log(params)
+            console.log(this.userInfo.avatar)
+            var formData = new FormData()
+            formData.append("username", this.userInfo.username)
+            formData.append("introduction", this.userInfo.introduction)
+            formData.append("gender", this.userInfo.gender)
+            formData.append("birthday", this.userInfo.birthday)
+            formData.append("avatar", params.file)
+            this.ajax.put("user/"+this.userInfo.id+"/",formData,null,null,null)
         },
         loadUserData:function(){
+            this.userInfo.id = this.$store.state.loginUser.id
             this.userInfo.username = this.$store.state.loginUser.username
             this.userInfo.introduction = this.$store.state.loginUser.introduction
             this.userInfo.gender = this.$store.state.loginUser.gender
@@ -94,9 +104,8 @@ export default {
             this.userInfo.avatar = this.$store.state.loginUser.avatar
         },
         selectAvatar:function(file, fileList){
-            console.log(file,fileList)
+            fileList.splice(0,1,file) //替换掉第一个，可以不用写limit
             this.userInfo.avatar = URL.createObjectURL(file.raw)
-            console.log(URL.createObjectURL(file.raw))
         }
     },
     created(){
