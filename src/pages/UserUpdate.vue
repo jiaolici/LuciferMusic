@@ -73,7 +73,8 @@ export default {
                 birthday:"",
                 city:"",
                 avatar:""
-            }
+            },
+            isAvatarSelected:false
         }
     },
     components:{
@@ -81,18 +82,36 @@ export default {
     },
     methods:{
         saveHandle:function(){
-            this.$refs.upload.submit()
+            if(this.isAvatarSelected){
+                this.$refs.upload.submit()
+            }
+            else{
+                this.uploadInfo()
+            }
         },
         uploadInfo:function(params){
-            console.log(params)
-            console.log(this.userInfo.avatar)
             var formData = new FormData()
             formData.append("username", this.userInfo.username)
             formData.append("introduction", this.userInfo.introduction)
             formData.append("gender", this.userInfo.gender)
             formData.append("birthday", this.userInfo.birthday)
-            formData.append("avatar", params.file)
-            this.ajax.put("user/"+this.userInfo.id+"/",formData,null,null,null)
+            if(params){
+                formData.append("avatar", params.file)
+            }
+            var city = this.userInfo.city
+            if(Array.isArray(city)){
+                formData.append("city", city[city.length-1])
+            }
+            else if(typeof city == "string"){
+                formData.append("city", city)
+            }
+            this.ajax.patch("user/"+this.userInfo.id+"/",formData,{
+                headers:{'Content-Type':'multipart/form-data'}
+            },(data)=>{
+                this.$message({showClose:true,center: true,duration:1000,message:'更新成功',type:"success"});
+            },(data)=>{
+                this.$message({showClose:true,center: true,duration:1000,message:'更新失败',type:"error"});
+            })
         },
         loadUserData:function(){
             this.userInfo.id = this.$store.state.loginUser.id
@@ -104,8 +123,9 @@ export default {
             this.userInfo.avatar = this.$store.state.loginUser.avatar
         },
         selectAvatar:function(file, fileList){
-            fileList.splice(0,1,file) //替换掉第一个，可以不用写limit
+            fileList.splice(0,1,file) //替换掉第一个文件，可以不用写limit
             this.userInfo.avatar = URL.createObjectURL(file.raw)
+            this.isAvatarSelected = true
         }
     },
     created(){
@@ -113,7 +133,7 @@ export default {
             this.loadUserData()
         }
         else{
-            this.$EventBus.$on("login",this.loadUserData)
+            this.$EventBus.$on("login",this.loadUserData)//刷新页面时监听登录
         }
     }
 }

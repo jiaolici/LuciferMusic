@@ -42,19 +42,22 @@ axios.interceptors.request.use((config)=>{
   return config
 })
 
-function apiAxios (method, url, params, responseType, success, failure) {
-  if (params) {
-    params = filterNull(params)
+function apiAxios (method, url, data, otherParams, success, failure) {
+  if (data) {
+    data = filterNull(data)
   }
-  axios({
+  var params = {
     method: method,
     url: url,
-    data: method === 'POST' || method === 'PUT' ? params : null,
-    params: method === 'GET' || method === 'DELETE' ? params : null,
+    data: method === 'POST' || method === 'PUT' ? data : null,
+    params: method === 'GET' || method === 'DELETE' ? data : null,
     baseURL: root,
-    withCredentials: false,
-    responseType: responseType ? responseType : "json"
-  })
+    withCredentials: false
+  }
+  if(otherParams){
+    Object.assign(params,otherParams)
+  }
+  axios(params)
   .then(function (res) {
     if (res.data) {
       if (success) {
@@ -91,17 +94,20 @@ function apiAxios (method, url, params, responseType, success, failure) {
 
 // 返回在vue模板中的调用接口
 export default {
-  get: function (url, params, responseType, success, failure) {
-    return apiAxios('GET', url, params, responseType, success, failure)
+  get: function (url, data, otherParams, success, failure) {
+    return apiAxios('GET', url, data, otherParams, success, failure)
   },
-  post: function (url, params, responseType, success, failure) {
-    return apiAxios('POST', url, params, responseType, success, failure)
+  post: function (url, data, otherParams, success, failure) {
+    return apiAxios('POST', url, data, otherParams, success, failure)
   },
-  put: function (url, params, responseType, success, failure) {
-    return apiAxios('PUT', url, params, responseType, success, failure)
+  put: function (url, data, otherParams, success, failure) {
+    return apiAxios('PUT', url, data, otherParams, success, failure)
   },
-  delete: function (url, params, responseType, success, failure) {
-    return apiAxios('DELETE', url, params, responseType, success, failure)
+  delete: function (url, data, otherParams, success, failure) {
+    return apiAxios('DELETE', url, data, otherParams, success, failure)
+  },
+  patch: function (url, data, otherParams, success, failure) {
+    return apiAxios('PATCH', url, data, otherParams, success, failure)
   }
 }
   
