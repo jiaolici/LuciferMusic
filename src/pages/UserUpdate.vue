@@ -108,6 +108,7 @@ export default {
             this.ajax.patch("user/"+this.userInfo.id+"/",formData,{
                 headers:{'Content-Type':'multipart/form-data'}
             },(data)=>{
+                this.$store.commit('login',data)//更新当前用户信息
                 this.$message({showClose:true,center: true,duration:1000,message:'更新成功',type:"success"});
             },(data)=>{
                 this.$message({showClose:true,center: true,duration:1000,message:'更新失败',type:"error"});

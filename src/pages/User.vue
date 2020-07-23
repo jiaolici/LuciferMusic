@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="user_background" :style="{backgroundImage:album_cover}">
-            <el-avatar :size="100"> user </el-avatar>
-            <h1 style="margin-top:10px">jiaolici</h1>
+            <el-avatar :size="100" :src="user.avatar"> user </el-avatar>
+            <h1 style="margin-top:10px">{{user.username}}</h1>
             <el-row>
                 <el-col :span="11" class="left-col">
                     <span class="user_statistic_num">1645</span>
@@ -147,11 +147,19 @@ export default {
     data(){
         return {
             album_cover:"url(" + user_background + ")",
-            activeItem:"favSongs"
+            activeItem:"favSongs",
+            user:null
         }
     },
     components:{
         SongList
+    },
+    created(){
+        this.ajax.get("user/"+this.$route.params.id+"/",null,null,(data)=>{
+            this.user = data
+        },(errorData)=>{
+
+        })
     }
 }
 </script>

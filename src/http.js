@@ -49,7 +49,7 @@ function apiAxios (method, url, data, otherParams, success, failure) {
   var params = {
     method: method,
     url: url,
-    data: method === 'POST' || method === 'PUT' ? data : null,
+    data: method === 'POST' || method === 'PUT' || method === 'PATCH' ? data : null,
     params: method === 'GET' || method === 'DELETE' ? data : null,
     baseURL: root,
     withCredentials: false

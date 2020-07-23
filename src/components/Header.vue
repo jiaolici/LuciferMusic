@@ -3,17 +3,16 @@
         <el-col :span="4"><h1>Lucifer Music</h1></el-col>
         <el-col :span="10" :offset="1">
             <el-menu
-                default-active="1"
+                :default-active="$route.name"
                 class="el-menu-demo"
                 mode="horizontal"
-                @select="handleSelect"
                 background-color="#303133"
                 text-color="#fff"
                 active-text-color="#ffd04b"
                 :router="true">
-                <el-menu-item index="1" :route="{name:'Index'}">首页</el-menu-item>
-                <el-menu-item v-if="this.$store.state.loginUser" index="2" :route="{name:'User'}">我的音乐</el-menu-item>
-                <el-menu-item v-else index="2" :route="{name:'User'}" disabled>我的音乐</el-menu-item>
+                <el-menu-item index="Index" :route="{name:'Index'}">首页</el-menu-item>
+                <el-menu-item v-if="this.$store.state.loginUser" index="2" :route="{name:'User',params:{id:$store.state.loginUser.id}}">我的音乐</el-menu-item>
+                <el-menu-item v-else index="User" :route="{name:'User'}" disabled>我的音乐</el-menu-item>
             </el-menu>
         </el-col>
         <el-col :span="6">
@@ -64,9 +63,6 @@ export default {
         };
     },
     methods: {
-        handleSelect(key, keyPath) {
-            console.log(key, keyPath);
-        },
         changeForm(formName){
             if(formName == "regVerify"){
                 this.currentForm = "verificationForm"
@@ -104,7 +100,7 @@ export default {
         },
         handleCommand(command){
             if(command == "userInfo"){
-                this.$router.push({name:"User"})
+                this.$router.push({name:"User",params:{id:this.$store.state.loginUser.id}})
             }
             else if(command == "userSetting"){
                 this.$router.push({name:"UserUpdate"})

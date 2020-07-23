@@ -40,7 +40,7 @@ Vue.use(VueRouter)
         component:Artist
       },
       {
-        path:'/user',
+        path:'/user/:id',
         name:'User',
         component:User
       },
