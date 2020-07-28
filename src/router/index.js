@@ -35,7 +35,7 @@ Vue.use(VueRouter)
         component:Album
       },
       {
-        path:'/artist',
+        path:'/artist/:id',
         name:'Artist',
         component:Artist
       },
