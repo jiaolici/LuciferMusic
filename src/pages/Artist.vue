@@ -31,19 +31,19 @@
             <el-row style="height:30px">
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
-                        单曲：442
+                        单曲：{{artist.songs.length}}
                     </div>
                 </el-col>
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
-                        专辑：47
+                        专辑：{{artist.albums.length}}
                     </div>
                 </el-col>
             </el-row>
         </div>
         <el-tabs v-model="activeItem">
             <el-tab-pane label="热门歌曲" name="songList">
-                <SongList showtype="artist">
+                <SongList showtype="artist" :songList="artist.songs">
                 </SongList>
             </el-tab-pane>
             <el-tab-pane label="所有专辑" name="allAlbum">
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import SongList from '../components/SongList.vue'
+import SongList from '../components/SongList2.vue'
 export default {
     data(){
         return {

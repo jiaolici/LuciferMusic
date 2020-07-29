@@ -14,7 +14,7 @@
                 <template slot-scope="scope">
                     <el-row>
                         <el-col :span="scope.row.songNameWidth" class="songNameCol">
-                            <span style="line-height:28.5px;">{{ scope.row.name }}</span>
+                            <span style="line-height:28.5px;">{{ scope.row.name+scope.row.songNameWidth }}</span>
                         </el-col>
                         <el-col :span="scope.row.songBtnWidth">
                             <div>
@@ -26,13 +26,18 @@
                 </template>
             </el-table-column>
             <el-table-column
-                prop="artist"
                 label="歌手"
-                :show-overflow-tooltip="true"
                 v-if="showtype != 'artist'">
+                <template slot-scope="scope">
+                    <el-row>
+                        <el-col v-for="artist in scope.row.artists"  :key="artist.id" :span="24/scope.row.artists.length" class="songNameCol">
+                            <span style="line-height:28.5px;">{{ artist.name }}</span>
+                        </el-col>
+                    </el-row>
+                </template>
             </el-table-column>
             <el-table-column
-                prop="albumName"
+                prop="album.name"
                 label="专辑"
                 :show-overflow-tooltip="true"
                 v-if="showtype != 'album'">
@@ -49,42 +54,20 @@
 export default {
     data(){
         return {
-            songList:[
-                {
-                    name:"Disorder",
-                    albumName:"Unknown Pleasures",
-                    artist:"Joy Division",
-                    duration:"03:32",
-                    songNameWidth:24,
-                    songBtnWidth:0
-                },
-                {
-                    name:"Day Of The Lords sa dasdasd adsasda sdasdasdasdasdasdasd",
-                    albumName:"Unknown Pleasures",
-                    artist:"Joy Division1111111111111111111111111111111",
-                    duration:"04:49",
-                    songNameWidth:24,
-                    songBtnWidth:0
-                },
-                {
-                    name:"Candidate",
-                    albumName:"Unknown Pleasures",
-                    artist:"Joy Division",
-                    duration:"03:04",
-                    songNameWidth:24,
-                    songBtnWidth:0
-                },
-            ]
+
         }
     },
     methods:{
         cellMouseEnter:function(row, column, cell, event){
             row.songNameWidth = 12;
             row.songBtnWidth = 12;
+            console.log(this.songList[0].songNameWidth)
+            console.log(this.songList[1].songNameWidth)
         },
         cellMouseLeave:function(row, column, cell, event){
             row.songNameWidth = 24;
             row.songBtnWidth = 0;
+            console.log("b")
         },
     },
     props:{
@@ -95,9 +78,18 @@ export default {
                 // 这个值必须匹配下列字符串中的一个
                 return ['playList', 'album', 'artist'].indexOf(value) !== -1
             }
+        },
+        songList:{
+            type:Array
         }
-        
+    },
+    created:function(){
+        this.songList = this.songList.map((currentValue,index,arr)=>{
+            Object.assign(currentValue,{songNameWidth:24,songBtnWidth:0})
+            return currentValue
+        })
     }
+
 }
 </script>
 
