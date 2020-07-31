@@ -4,7 +4,7 @@
             <el-image style="width:150px;height:150px;float:left"></el-image>
         </div>
         <div style="padding-left:200px;text-align:left">
-            <h3>Unknown Pleasures</h3>
+            <h3>{{album.name}}</h3>
             <el-row style="height:30px">
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
@@ -53,12 +53,20 @@ import Comment from '@/components/Comment.vue'
 export default {
     data(){
         return {
-            album_cover:"url(" + album_coverImag + ")"
+            album_cover:"url(" + album_coverImag + ")",
+            album:null
         }
     },
     components:{
         SongList,
         Comment
+    },
+    created(){
+        this.ajax.get("album/"+this.$route.params.id+"/",null,null,(data)=>{
+            this.album = data
+        },(errorData)=>{
+
+        })
     }
 }
 </script>

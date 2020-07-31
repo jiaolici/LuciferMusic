@@ -25,12 +25,12 @@ Vue.use(VueRouter)
         component:Index
       },
       {
-        path:'/song',
+        path:'/song/:id',
         name:'Song',
         component:Song
       },
       {
-        path:'/album',
+        path:'/album/:id',
         name:'Album',
         component:Album
       },

@@ -2,7 +2,7 @@
     <div>
         <el-image style="width:150px;height:150px;float:left"></el-image>
         <div style="padding-left:200px;text-align:left">
-            <h3>Insight</h3>
+            <h3>{{song.name}}</h3>
             <el-row style="height:30px">
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
@@ -50,7 +50,19 @@
 <script>
 import Comment from '@/components/Comment.vue'
 export default {
-    components:{Comment}
+    data:function(){
+        return {
+            song:null
+        }
+    },
+    components:{Comment},
+    created(){
+        this.ajax.get("song/"+this.$route.params.id+"/",null,null,(data)=>{
+            this.song = data
+        },(errorData)=>{
+
+        })
+    }
 }
 </script>
 

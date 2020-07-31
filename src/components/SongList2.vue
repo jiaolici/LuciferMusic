@@ -14,7 +14,10 @@
                 <template slot-scope="scope">
                     <el-row>
                         <el-col :span="scope.row.songNameWidth" class="songNameCol">
-                            <span style="line-height:28.5px;">{{ scope.row.name+scope.row.songNameWidth }}</span>
+                            <!-- <span style="line-height:28.5px;">{{ scope.row.name }}</span> -->
+                            <router-link :to="{name:'Song',params:{id:'1'}}" v-slot="{ href }">
+                                <el-link :href="href" :underline="false">{{ scope.row.name }}</el-link>
+                            </router-link>
                         </el-col>
                         <el-col :span="scope.row.songBtnWidth">
                             <div>
@@ -37,10 +40,13 @@
                 </template>
             </el-table-column>
             <el-table-column
-                prop="album.name"
                 label="专辑"
-                :show-overflow-tooltip="true"
                 v-if="showtype != 'album'">
+                <template slot-scope="scope">
+                    <router-link :to="{name:'Album',params:{id:'1'}}" v-slot="{ href }">
+                        <el-link :href="href" :underline="false">{{ scope.row.album.name }}</el-link>
+                    </router-link>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="duration"
@@ -54,21 +60,17 @@
 export default {
     data(){
         return {
-
         }
     },
     methods:{
         cellMouseEnter:function(row, column, cell, event){
             row.songNameWidth = 12;
             row.songBtnWidth = 12;
-            console.log(this.songList[0].songNameWidth)
-            console.log(this.songList[1].songNameWidth)
         },
         cellMouseLeave:function(row, column, cell, event){
             row.songNameWidth = 24;
             row.songBtnWidth = 0;
-            console.log("b")
-        },
+        }
     },
     props:{
         showtype:{
@@ -85,7 +87,11 @@ export default {
     },
     created:function(){
         this.songList = this.songList.map((currentValue,index,arr)=>{
-            Object.assign(currentValue,{songNameWidth:24,songBtnWidth:0})
+            // Object.assign(currentValue,{songNameWidth:24,songBtnWidth:0})
+            // currentValue.songNameWidth = 24
+            // currentValue.songBtnWidth = 0
+            this.$set(currentValue,'songNameWidth',24)
+            this.$set(currentValue,'songBtnWidth',0)
             return currentValue
         })
     }
@@ -97,6 +103,7 @@ export default {
 .songNameCol{
     overflow:hidden;
     text-overflow:ellipsis;
-    white-space:nowrap
+    white-space:nowrap;
+    line-height:28.67px
 }
 </style>
