@@ -19,7 +19,10 @@
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
                         代表作品：
-                        <el-link :underline="false" style="vertical-align:baseline;">Love Will Tear Us Apart</el-link> 
+                        <!-- <el-link :underline="false" style="vertical-align:baseline;">Love Will Tear Us Apart</el-link>  -->
+                        <router-link v-if="artist.songs" :to="{name:'Song',params:{id:artist.songs[0].id}}" v-slot="{ href }">
+                            <el-link :href="href" :underline="false" style="vertical-align:baseline;">{{ artist.songs[0].name }}</el-link>
+                        </router-link>
                     </div>
                 </el-col>
                 <el-col :span="12">
@@ -48,44 +51,16 @@
             </el-tab-pane>
             <el-tab-pane label="所有专辑" name="allAlbum">
                 <el-row>
-                    <el-col :span="6">
-                        <el-image style="width: 150px; height: 150px">
+                    <el-col v-for="album in artist.albums" :key="album.id" :span="6">
+                        <el-image :src="album.cover" style="width: 150px; height: 150px">
                         </el-image>
                         <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-image style="width: 150px; height: 150px">
-                        </el-image>
-                        <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-image style="width: 150px; height: 150px">
-                        </el-image>
-                        <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-image style="width: 150px; height: 150px">
-                        </el-image>
-                        <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
-                        </div>
-                    </el-col>
-                    <el-col :span="6" style="margin-top:10px">
-                        <el-image style="width: 150px; height: 150px">
-                        </el-image>
-                        <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
+                            <!-- <el-link :underline="false">{{album.name}}</el-link> -->
+                            <router-link :to="{name:'Album',params:{id:album.id}}" v-slot="{ href }">
+                                <el-link :href="href" :underline="false">{{ album.name }}</el-link>
+                            </router-link>
+                            <br>
+                            <span style="font-size:12px;color:#999">{{album.publish_date}}</span>
                         </div>
                     </el-col>
                 </el-row>

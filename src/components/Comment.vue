@@ -40,11 +40,19 @@
                     <el-link :underline="false" @click="praiseClick" style="margin-right:20px">
                         <i class="zi zi_digg"></i>{{" ("+comment.praise+")"}}
                     </el-link>
-                    <el-link :underline="false" @click="praiseClick">
+                    <el-link :underline="false" @click="replayHandle(comment)">
                         <i class="zi zi_commentalt"></i>
                     </el-link>
                 </div>
             </div>
+            <el-row v-if="comment.replay_show" style="padding-left:50px;margin-top:10px">
+                <el-col :span="22">
+                    <el-input v-model="comment.replay_content" size="mini" placeholder="回复" maxlength="300" show-word-limit></el-input>
+                </el-col>
+                <el-col :span="2">
+                    <el-button size="mini" style="float:right;">回复</el-button>
+                </el-col>
+            </el-row>
             <el-divider></el-divider>
         </div>
         <el-pagination
@@ -65,14 +73,18 @@ export default {
                     username:"观星者",
                     content:"123123",
                     datetime:"2012-3-2 14:02:55",
-                    praise:10
+                    praise:10,
+                    replay_show:false,
+                    replay_content:""
                 },
                 {
                     id:2,
                     username:"观星者",
                     content:"123123",
                     datetime:"2012-3-2 14:02:55",
-                    praise:10
+                    praise:10,
+                    replay_show:false,
+                    replay_content:""
                 }
             ],
             comment_content:""
@@ -81,6 +93,9 @@ export default {
     methods:{
         praiseClick:function(){
             console.log("xxx");
+        },
+        replayHandle:function(comment){
+            comment.replay_show = !comment.replay_show
         }
     }
 }

@@ -35,6 +35,9 @@ new Vue({
   },
   created(){
     let token = window.localStorage.getItem('token')
+    if(!token){
+      return
+    }
     let that = this
     let verify = {
       then:function(resolve,reject){

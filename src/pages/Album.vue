@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="album_cover" :style="{backgroundImage:album_cover}">
-            <el-image style="width:150px;height:150px;float:left"></el-image>
+            <el-image :src="album.cover" style="width:150px;height:150px;float:left"></el-image>
         </div>
         <div style="padding-left:200px;text-align:left">
             <h3>{{album.name}}</h3>
@@ -9,37 +9,41 @@
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
                         歌手：
-                        <router-link to="artist" tag="span"><el-link :underline="false" style="vertical-align:baseline;">Joy Division</el-link></router-link>
+                        <!-- <router-link to="artist" tag="span"><el-link :underline="false" style="vertical-align:baseline;">Joy Division</el-link></router-link> -->
+                        <router-link :to="{name:'Artist',params:{id:album.artist.id}}" v-slot="{ href }">
+                            <el-link :href="href" :underline="false" style="vertical-align:baseline;">{{ album.artist.name }}</el-link>
+                        </router-link>
                     </div>
                 </el-col>
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
-                        流派：punk
+                        流派：{{ styles }}
                     </div>
                 </el-col>
             </el-row>
             <el-row style="height:30px">
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
-                        发行公司：华纳音乐 
+                        发行公司：{{ album.company }}
                     </div>
                 </el-col>
                 <el-col :span="12">
                     <div style="font-size:14px;line-height:30px">
-                        发行时间：1979-06-14
+                        发行时间：{{ album.publish_date }}
                     </div>
                 </el-col>
             </el-row>
             <el-row style="padding-top:10px">
-                <el-button icon="el-icon-video-play" size="small">播放</el-button>
+                <el-button icon="el-icon-video-play" @click="play" size="small">播放</el-button>
                 <el-button icon="el-icon-folder-add" size="small">收藏</el-button>
                 <el-button icon="el-icon-s-comment" size="small">评论（205154）</el-button>
             </el-row>
             <div style="line-height:25px;font-size:14px;margin-top:10px">
-                2007 digitally remastered and expanded two CD edition of the influential Manchester quartet's 1979 debut album. Joy Division's influence on modern music is not only based around the band's unique sound, but also their vision, their personalities and their intense and troubled vocalist, Ian Curtis who committed suicide on the eve of their first tour of the U.S. Disc One features the original album containing 10 tracks including 'Disorder', 'She's Lost Control' and 'Interzone'. Disc Two features 12 tracks recorded live at The Factory in Manchester, April of 1980. Rhino UK.
+                <p v-html="album.introduction.replace(/\r\n/g, '<br/>')">
+                </p>
             </div>
         </div>
-        <SongList showtype="album">
+        <SongList showtype="album" :songList="album.songs">
         </SongList>
         <Comment>
         </Comment>
@@ -48,7 +52,7 @@
 
 <script>
 import album_coverImag from '../images/album_cover.png'
-import SongList from '../components/SongList.vue'
+import SongList from '../components/SongList2.vue'
 import Comment from '@/components/Comment.vue'
 export default {
     data(){
@@ -56,6 +60,26 @@ export default {
             album_cover:"url(" + album_coverImag + ")",
             album:null
         }
+    },
+    computed:{
+        styles:function(){
+            if(this.album.styles){
+                var styles = ""
+                for (let style of this.album.styles){
+                    styles += (style+"、")
+                }
+                return styles.substring(0, styles.length-1)
+            }
+            else{
+                return ""
+            }
+        }
+    },
+    methods:{
+        play(index){
+            this.$store.commit('playSong',{'index':0,'songList':this.album.songs})
+            this.$EventBus.$emit("cutSong");
+        },
     },
     components:{
         SongList,

@@ -21,7 +21,7 @@
                         </el-col>
                         <el-col :span="scope.row.songBtnWidth">
                             <div>
-                                <el-button icon="el-icon-video-play" size="mini" circle></el-button>
+                                <el-button @click="play(scope.$index)" icon="el-icon-video-play" size="mini" circle></el-button>
                                 <el-button icon="el-icon-folder-add" size="mini" circle></el-button>
                             </div>
                         </el-col>
@@ -33,9 +33,15 @@
                 v-if="showtype != 'artist'">
                 <template slot-scope="scope">
                     <el-row>
-                        <el-col v-for="artist in scope.row.artists"  :key="artist.id" :span="24/scope.row.artists.length" class="songNameCol">
+                        <!-- <el-col v-for="artist in scope.row.artists"  :key="artist.id" :span="24/scope.row.artists.length" class="songNameCol">
                             <span style="line-height:28.5px;">{{ artist.name }}</span>
-                        </el-col>
+                        </el-col> -->
+                        <router-link v-for="(artist,i) in scope.row.artists" :key="artist.id" :to="{name:'Artist',params:{id:artist.id}}" v-slot="{ href }">
+                            <span>
+                                <el-link :href="href" :underline="false" style="vertical-align:baseline;">{{ artist.name }}</el-link>
+                                <span v-if="i!=scope.row.artists.length-1" style="color:#a6a9ad"> / </span>
+                            </span>
+                        </router-link>
                     </el-row>
                 </template>
             </el-table-column>
@@ -51,6 +57,9 @@
             <el-table-column
                 prop="duration"
                 label="时长">
+                <template slot-scope="scope">
+                    <span>{{ formatTime(scope.row.duration) }}</span>
+                </template>
             </el-table-column>
         </el-table>
     </div>
@@ -70,7 +79,17 @@ export default {
         cellMouseLeave:function(row, column, cell, event){
             row.songNameWidth = 24;
             row.songBtnWidth = 0;
-        }
+        },
+        play(index){
+            this.$store.commit('playSong',{'index':index,'songList':this.songList})
+            this.$EventBus.$emit("cutSong");
+        },
+        formatTime(time){
+            let it = parseInt(time)
+            let m = parseInt(it/60)
+            let s = parseInt(it%60)
+            return (m<10?"0":"")+parseInt(it/60)+":"+(s<10?"0":"")+parseInt(it%60)
+        },
     },
     props:{
         showtype:{

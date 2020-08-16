@@ -6,21 +6,35 @@
                 <el-row>
                     <el-col :span="3">
                         <el-button-group>
-                            <el-button icon="el-icon-d-arrow-left" size="small" circle></el-button>
+                            <el-button icon="el-icon-d-arrow-left" @click="handlePre" size="small" circle></el-button>
                             <el-button :icon="playIcon" @click="play" size="small" circle></el-button>
-                            <el-button icon="el-icon-d-arrow-right" size="small" circle></el-button>
+                            <el-button icon="el-icon-d-arrow-right" @click="handleNext" size="small" circle></el-button>
                         </el-button-group>
                     </el-col>
                     <el-col :span="2">
-                        <el-avatar shape="square" size="medium">封面</el-avatar>
+                        <el-avatar shape="square" size="medium" :src="song.album.cover" style="border:1px solid black;">封面</el-avatar>
                     </el-col>
                     <el-col :span="11">
                         <div style="line-height:20px;height:20px">
-                            <el-link type="info">{{music.name}}</el-link>
+                            <router-link v-if="song.id" :to="{name:'Song',params:{id:song.id}}" v-slot="{ href }">
+                                <el-link :href="href" type="info">{{ song.name }}</el-link>
+                            </router-link>
+                            <el-link v-else type="info">{{ song.name }}</el-link>
                             <span style="color:#a6a9ad"> -- </span>
-                            <router-link to="artist" tag="span"><el-link type="info">{{music.artist}}</el-link></router-link>
+                            <span v-for="(artist,i) in song.artists" :key="artist.name">
+                                <router-link v-if="artist.id" :to="{name:'Artist',params:{id:artist.id}}" v-slot="{ href }">
+                                    <span>
+                                        <el-link :href="href" type="info">{{ artist.name }}</el-link>
+                                        <span v-if="i!=song.artists.length-1" style="color:#a6a9ad"> / </span>
+                                    </span>
+                                </router-link>
+                                <span v-else>
+                                    <el-link type="info">{{ artist.name }}</el-link>
+                                    <span v-if="i!=song.artists.length-1" style="color:#a6a9ad"> / </span>
+                                </span>
+                            </span>
                         </div>
-                        <el-slider v-model="music.currentTime" :max="music.maxTime" :format-tooltip="formatTime" @change="changeCurrentTime"></el-slider>
+                        <el-slider v-model="currentTime" :max="song.duration" :format-tooltip="formatTime" @change="changeCurrentTime"></el-slider>
                     </el-col>
                     <el-col :span="4">
                         <div>
@@ -32,7 +46,7 @@
                     <el-col :span="4">
                         <el-popover placement="top" trigger="click" width="20px" popper-class="volume-popper">
                             <el-slider
-                                v-model="music.volume"
+                                v-model="volume"
                                 vertical
                                 height="200px"
                                 :show-tooltip="false"
@@ -44,8 +58,10 @@
                         </el-popover>        
                     </el-col>
                 </el-row>
-                <audio ref="audio" :src="music.audioUrl" @timeupdate="onTimeupdate" @ended="onEnded">
+                <audio ref="audio" :src="song.audio" @timeupdate="onTimeupdate" @ended="onEnded">
                 </audio>
+                <!-- <audio v-else ref="audio">
+                </audio> -->
             </div>
         </div>
     </div>
@@ -55,28 +71,39 @@
 export default {
     data(){
         return {
-            music:{
-                isPlay:false,
-                currentTime:0,
-                maxTime:180,
-                volume:100,
-                artist:"歌手",
+            song:{
+                id:null,
+                artists:[
+                    {
+                        id:null,
+                        name:"歌手"
+                    }
+                ],
+                album:{
+                    id:null,
+                    name:"专辑"
+                },
                 name:"歌曲",
-                audioUrl:"http://127.0.0.1:8081/lucifermusic/song?id=1"
+                audio:null,
+                lyric:null,
+                duration:0
             },
+            isPlaying:false,
+            volume:100,
+            currentTime:0,
             status:"hidden",
             mouseStatus:"leave"
         }
     },
     computed:{
         maxTimeFormat:function(){
-            return this.formatTime(this.music.maxTime);
+            return this.formatTime(this.song.duration);
         },
         currentTimeFormat:function(){
-            return this.formatTime(this.music.currentTime);
+            return this.formatTime(this.currentTime);
         },
         playIcon:function(){
-            if(this.music.isPlay){
+            if(this.isPlaying){
                 return "el-icon-video-pause"
             }
             else{
@@ -92,13 +119,13 @@ export default {
             return (m<10?"0":"")+parseInt(it/60)+":"+(s<10?"0":"")+parseInt(it%60)
         },
         play(){
-            if(this.music.isPlay){
+            if(this.isPlaying){
                 this.$refs.audio.pause()
             }
             else{
                 this.$refs.audio.play()
             }
-            this.music.isPlay = !this.music.isPlay
+            this.isPlaying = !this.isPlaying
             // this.ajax.get("audio",{"id":1}, "arraybuffer", r=>{
             //     console.log(r);
             //     this.music.audio.decodeAudioData(r,function(buffer){
@@ -111,15 +138,35 @@ export default {
             //     })
             // });
         },
+        handleNext(){
+            this.$store.commit('nextSong')
+            this.cutSong()
+        },
+        handlePre(){
+            this.$store.commit('preSong')
+            this.cutSong()
+        },
+        cutSong(){
+            if(this.isPlaying){
+                this.$refs.audio.pause()
+            }
+            this.song = this.$store.state.player.playingList[this.$store.state.player.playingSong]
+            this.isPlaying = true
+            this.$nextTick(()=>{
+                this.$refs.audio.currentTime = 0
+                this.$refs.audio.play()
+            })
+        },
         onTimeupdate(){
-            this.music.currentTime = this.$refs.audio.currentTime;
+            this.currentTime = this.$refs.audio.currentTime;
         },
         onEnded(){
-            this.music.isPlay = !this.music.isPlay;
-            this.music.currentTime = 0;
+            // this.isPlaying = !this.isPlaying;
+            // this.currentTime = 0;
+            this.handleNext()
         },
         changeCurrentTime(index) {
-            if(this.music.isPlay){
+            if(this.isPlaying){
                 this.$refs.audio.currentTime = index;
             }
             else{
@@ -153,12 +200,7 @@ export default {
         }
     },
     created(){
-        this.ajax.get('music', {'id':1}, "json", r => {
-            this.music.artist = r.artists[0].name;
-            this.music.name = r.name;
-            this.music.maxTime = r.duration;
-        });
-        
+        this.$EventBus.$on("cutSong",this.cutSong)
         /*this.ajax.get("audio",{"id":1}, r=>{
             this.music.audio.decodeAudioData(r,function(buffer){
                 console.log("decode success");
