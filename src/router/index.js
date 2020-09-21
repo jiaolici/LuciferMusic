@@ -44,7 +44,7 @@ Vue.use(VueRouter)
         component:User
       },
       {
-        path:'/playlist',
+        path:'/playlist/:id',
         name:'PlayList',
         component:PlayList
       },

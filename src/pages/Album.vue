@@ -35,7 +35,8 @@
             </el-row>
             <el-row style="padding-top:10px">
                 <el-button icon="el-icon-video-play" @click="play" size="small">播放</el-button>
-                <el-button icon="el-icon-folder-add" size="small">收藏</el-button>
+                <el-button v-if="album.is_fav" icon="el-icon-folder-add" @click="fav" size="small" type="primary">已收藏</el-button>
+                <el-button v-else icon="el-icon-folder-add" @click="fav" size="small">收藏</el-button>
                 <el-button icon="el-icon-s-comment" size="small">评论（205154）</el-button>
             </el-row>
             <div style="line-height:25px;font-size:14px;margin-top:10px">
@@ -45,8 +46,23 @@
         </div>
         <SongList showtype="album" :songList="album.songs">
         </SongList>
-        <Comment>
+        <Comment type="album" :target_id="album.id">
         </Comment>
+        <el-dialog
+            :visible.sync="confirmDialogVisible"
+            width="400px"
+            custom-class = "loginDialog">
+            <div style="padding:20px 60px">
+                <p>是否取消收藏？</p>
+                <el-button type="primary" size="small" @click="favHandle">是</el-button>
+                <el-button size="small" @click="confirmDialogVisible = false">否</el-button>
+            </div>
+            <template slot="title">
+                <div>
+                <h4 style="margin:0;line-height:40px;color:#fff">提示</h4>
+                </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -58,7 +74,8 @@ export default {
     data(){
         return {
             album_cover:"url(" + album_coverImag + ")",
-            album:null
+            album:null,
+            confirmDialogVisible:false
         }
     },
     computed:{
@@ -76,10 +93,43 @@ export default {
         }
     },
     methods:{
-        play(index){
+        play(){
             this.$store.commit('playSong',{'index':0,'songList':this.album.songs})
             this.$EventBus.$emit("cutSong");
         },
+        fav(){
+            if(!this.$store.state.loginUser){
+                this.$message({type: 'warning',message: '请先登录!',showClose: true,center:true,duration:1000})
+                return
+            }
+            else{
+                if(this.album.is_fav){
+                    this.confirmDialogVisible = true
+                }
+                else{
+                    this.ajax.post("fav/",{
+                        user:this.$store.state.loginUser.id,
+                        content_type:"album",
+                        object_id:this.album.id
+                    },null,(data)=>{
+                        //console.log(data)
+                        this.album.is_fav = true
+                        this.album.fav_id = data.id
+                    },(errorData)=>{
+                        console.log(errorData)
+                    })
+                }
+            }
+        },
+        favHandle(){
+            this.ajax.delete("fav/"+this.album.fav_id+"/",null,null,(data)=>{
+                this.album.is_fav = false
+                this.confirmDialogVisible = false
+                console.log("xxxx")
+            },(errorData)=>{
+                console.log(errorData)
+            })
+        }
     },
     components:{
         SongList,

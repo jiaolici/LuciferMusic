@@ -37,7 +37,7 @@ function filterNull (o) {
 axios.interceptors.request.use((config)=>{
   let token = window.localStorage.getItem("token")
   if(token){
-    config.headers['token'] = token
+    config.headers['Authorization'] = "JWT "+token
   }
   return config
 })
@@ -59,16 +59,20 @@ function apiAxios (method, url, data, otherParams, success, failure) {
   }
   axios(params)
   .then(function (res) {
-    if (res.data) {
-      if (success) {
-        success(res.data)
-      }
-    } else {
-      if (failure) {
-        failure(res.data)
-      } else {
-        window.alert('error: ' + JSON.stringify(res.data))
-      }
+    // if (res.data) {
+    //   if (success) {
+    //     success(res.data)
+    //   }
+    // } 
+    // else {
+    //   if (failure) {
+    //     failure(res.data)
+    //   } else {
+    //     window.alert('error: ' + JSON.stringify(res.data))
+    //   }
+    // }
+    if(success){
+      success(res.data)
     }
   })
   .catch(function (err) {
