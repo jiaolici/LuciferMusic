@@ -10,7 +10,9 @@ import "element-ui/lib/theme-chalk/index.css";
 import router from './router'
 
 import axios from './http'
+import axios_async from './http2'
 Vue.prototype.ajax = axios // 让它在每个组件都可用(重命名axios为ajax)
+Vue.prototype.ajax_async = axios_async
 //配置Vue插件
 Vue.use(ElementUI);
 

@@ -9,7 +9,7 @@
                 <el-col>
                     <el-avatar shape="square" size="small" :src="songlist.creator.avatar"></el-avatar>
                     <!-- <el-link :underline="false" style="vertical-align:top;line-height:30px;margin-left:10px">我自己</el-link> -->
-                    <router-link :to="{name:'Artist',params:{id:songlist.creator.id}}" v-slot="{ href }">
+                    <router-link :to="{name:'User',params:{id:songlist.creator.id}}" v-slot="{ href }">
                         <el-link :href="href" :underline="false" style="vertical-align:top;line-height:30px;margin-left:10px">{{ songlist.creator.username }}</el-link>
                     </router-link>
                 </el-col>
@@ -28,8 +28,10 @@
             </el-row>
             <el-row style="padding-top:10px">
                 <el-button icon="el-icon-video-play" size="small" @click="play">播放</el-button>
-                <el-button icon="el-icon-folder-add" size="small">收藏</el-button>
-                <el-button icon="el-icon-s-comment" size="small">评论（205154）</el-button>
+                <!-- <el-button icon="el-icon-folder-add" size="small" @click="fav">收藏</el-button> -->
+                <el-button v-if="songlist.is_fav" icon="el-icon-folder-add" @click="fav" size="small" type="primary">已收藏</el-button>
+                <el-button v-else icon="el-icon-folder-add" @click="fav" size="small">收藏</el-button>
+                <el-button icon="el-icon-s-comment" size="small">评论（{{commentCount}}）</el-button>
             </el-row>
             <el-row  style="height:30px;;margin-top:10px">
                 <el-col :span="2">
@@ -56,8 +58,23 @@
         </div>
         <SongList showtype="playlist" :songList="songlist.songs">
         </SongList>
-        <Comment>
+        <Comment  type="songlist" :target_id="songlist.id" v-on:update-comment-count="commentCount=$event">
         </Comment>
+        <el-dialog
+            :visible.sync="confirmDialogVisible"
+            width="400px"
+            custom-class = "loginDialog">
+            <div style="padding:20px 60px">
+                <p>是否取消收藏？</p>
+                <el-button type="primary" size="small" @click="favHandle">是</el-button>
+                <el-button size="small" @click="confirmDialogVisible = false">否</el-button>
+            </div>
+            <template slot="title">
+                <div>
+                <h4 style="margin:0;line-height:40px;color:#fff">提示</h4>
+                </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -67,7 +84,9 @@ import Comment from '@/components/Comment.vue'
 export default {
     data(){
         return {
-            songlist:null
+            songlist:null,
+            commentCount:0,
+            confirmDialogVisible:false
         }
     },
     methods:{
@@ -75,17 +94,62 @@ export default {
             this.$store.commit('playSong',{'index':0,'songList':this.songlist.songs})
             this.$EventBus.$emit("cutSong");
         },
+        fav(){
+            if(!this.$store.state.loginUser){
+                this.$message({type: 'warning',message: '请先登录!',showClose: true,center:true,duration:1000})
+                return
+            }
+            else{
+                if(this.songlist.is_fav){
+                    this.confirmDialogVisible = true
+                }
+                else{
+                    this.ajax.post("fav/",{
+                        user:this.$store.state.loginUser.id,
+                        content_type:"songlist",
+                        object_id:this.songlist.id
+                    },null,(data)=>{
+                        //console.log(data)
+                        this.songlist.is_fav = true
+                        this.songlist.fav_id = data.id
+                    },(errorData)=>{
+                        console.log(errorData)
+                    })
+                }
+            }
+        },
+        favHandle(){
+            this.ajax.delete("fav/"+this.songlist.fav_id+"/",null,null,(data)=>{
+                this.songlist.is_fav = false
+                this.confirmDialogVisible = false
+                console.log("xxxx")
+            },(errorData)=>{
+                console.log(errorData)
+            })
+        },
+        loadSongList(){
+            this.ajax.get("songlist/"+this.$route.params.id+"/",null,null,(data)=>{
+                this.songlist = data
+            },(errorData)=>{
+
+            })
+        }
     },
     components:{
         SongList,
         Comment
     },
     created(){
-        this.ajax.get("songlist/"+this.$route.params.id+"/",null,null,(data)=>{
-            this.songlist = data
-        },(errorData)=>{
-
-        })
+        this.loadSongList()
+    },
+    watch:{
+        $route(){
+            if (this.$route.params.id) {
+                // this.created()
+                // console.log(this)
+                this.loadSongList()
+            }
+        }
     }
 }
 </script>

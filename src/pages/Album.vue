@@ -37,7 +37,7 @@
                 <el-button icon="el-icon-video-play" @click="play" size="small">播放</el-button>
                 <el-button v-if="album.is_fav" icon="el-icon-folder-add" @click="fav" size="small" type="primary">已收藏</el-button>
                 <el-button v-else icon="el-icon-folder-add" @click="fav" size="small">收藏</el-button>
-                <el-button icon="el-icon-s-comment" size="small">评论（205154）</el-button>
+                <el-button icon="el-icon-s-comment" size="small">评论（{{commentCount}}）</el-button>
             </el-row>
             <div style="line-height:25px;font-size:14px;margin-top:10px">
                 <p v-html="album.introduction.replace(/\r\n/g, '<br/>')">
@@ -46,7 +46,7 @@
         </div>
         <SongList showtype="album" :songList="album.songs">
         </SongList>
-        <Comment type="album" :target_id="album.id">
+        <Comment type="album" :target_id="album.id" v-on:update-comment-count="commentCount=$event">
         </Comment>
         <el-dialog
             :visible.sync="confirmDialogVisible"
@@ -75,6 +75,7 @@ export default {
         return {
             album_cover:"url(" + album_coverImag + ")",
             album:null,
+            commentCount:0,
             confirmDialogVisible:false
         }
     },

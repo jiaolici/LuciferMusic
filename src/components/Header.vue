@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-col :span="4"><h1>Lucifer Music</h1></el-col>
+        <el-col :span="4"><h1 class="header-logo">Lucifer Music</h1></el-col>
         <el-col :span="10" :offset="1">
             <el-menu
                 :default-active="$route.name"
@@ -134,7 +134,9 @@ h1{
 .el-avatar{
     margin-top: 12px;
 }
-
+.header-logo{
+    line-height: 60px;
+}
 </style>
 <style>
 .loginDialog>.el-dialog__header{

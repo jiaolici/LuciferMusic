@@ -40,25 +40,31 @@
             </el-row>
             <el-row style="padding-top:10px">
                 <el-button icon="el-icon-video-play" @click="play" size="small">播放</el-button>
-                <el-button icon="el-icon-folder-add" size="small">收藏</el-button>
-                <el-button icon="el-icon-s-comment" size="small">评论（205154）</el-button>
+                <el-button icon="el-icon-folder-add" size="small" @click="fav">收藏</el-button>
+                <el-button icon="el-icon-s-comment" size="small">评论（{{commentCount}}）</el-button>
+                
             </el-row>
             <div style="line-height:25px;font-size:14px;margin-top:10px">
                 <p v-html="song.lyric.replace(/\r\n/g, '<br/>')">
                 </p>
             </div>
         </div>
-        <Comment>
+        <Comment type="song" :target_id="song.id" v-on:update-comment-count="commentCount=$event">
         </Comment>
+        <FavSongDialog :visible="favSongDialogvisible" @favsongdialog-close="favSongDialogvisible=false" :songId="song.id">
+        </FavSongDialog>
     </div>
 </template>
 
 <script>
 import Comment from '@/components/Comment.vue'
+import FavSongDialog from '@/components/FavSongDialog.vue'
 export default {
     data:function(){
         return {
-            song:null
+            song:null,
+            commentCount:0,
+            favSongDialogvisible:false
         }
     },
     computed:{
@@ -80,8 +86,17 @@ export default {
             this.$store.commit('playSong',{'index':0,'songList':[this.song]})
             this.$EventBus.$emit("cutSong");
         },
+        fav(){
+            if(!this.$store.state.loginUser){
+                this.$message({type: 'warning',message: '请先登录!',showClose: true,center:true,duration:1000})
+                return
+            }
+            else{
+                this.favSongDialogvisible=true
+            }
+        }
     },
-    components:{Comment},
+    components:{Comment,FavSongDialog},
     created(){
         this.ajax.get("song/"+this.$route.params.id+"/",null,null,(data)=>{
             this.song = data

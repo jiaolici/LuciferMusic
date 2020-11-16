@@ -18,119 +18,48 @@
                 </el-col>
             </el-row>
         </div>
-        <el-tabs v-model="activeItem">
-            <el-tab-pane label="喜欢的歌曲" name="favSongs">
-                <SongList>
+        <el-tabs v-model="activeItem" @tab-click="tabClick">
+            <el-tab-pane label="听歌排行" name="rank">
+                <SongList :songList="rank" showtype="rank">
                 </SongList>
             </el-tab-pane>
             <el-tab-pane label="创建的歌单" name="createdSongLists">
                 <el-row>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
+                    <el-col v-for="songList in createdSongLists" :key="songList.id" :span="4">
+                        <el-image :src="songList.cover" style="width: 100px; height: 100px">
                         </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
+                        <p style="width: 100px;margin:0 auto">
+                            <router-link :to="{name:'PlayList',params:{id:songList.id}}" v-slot="{ href }">
+                                <el-link :href="href" :underline="false">{{ songList.name }}</el-link>
+                            </router-link>
+                        </p>
                     </el-col>
                 </el-row>
             </el-tab-pane>
             <el-tab-pane label="收藏的歌单" name="collectedSongLists">
                 <el-row>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
+                    <el-col v-for="songList in favSongLists" :key="songList.id" :span="4">
+                        <el-image :src="songList.cover" style="width: 100px; height: 100px">
                         </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-image style="width: 100px; height: 100px">
-                        </el-image>
-                        <p style="width: 100px;margin:0 auto"><el-link :underline="false">无下划线</el-link></p>
+                        <p style="width: 100px;margin:0 auto">
+                            <router-link :to="{name:'PlayList',params:{id:songList.id}}" v-slot="{ href }">
+                                <el-link :href="href" :underline="false">{{ songList.name }}</el-link>
+                            </router-link>
+                        </p>
                     </el-col>
                 </el-row>
             </el-tab-pane>
             <el-tab-pane label="收藏的专辑" name="collectedAlbum">
                 <el-row>
-                    <el-col :span="6">
-                        <el-image style="width: 150px; height: 150px">
+                    <el-col v-for="album in favAlbum" :key="album.id" :span="6">
+                        <el-image :src="album.cover" style="width: 150px; height: 150px">
                         </el-image>
                         <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-image style="width: 150px; height: 150px">
-                        </el-image>
-                        <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-image style="width: 150px; height: 150px">
-                        </el-image>
-                        <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
-                        </div>
-                    </el-col>
-                    <el-col :span="6">
-                        <el-image style="width: 150px; height: 150px">
-                        </el-image>
-                        <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
-                        </div>
-                    </el-col>
-                    <el-col :span="6" style="margin-top:10px">
-                        <el-image style="width: 150px; height: 150px">
-                        </el-image>
-                        <div style="width: 150px;margin:0 auto;text-align:left">
-                            <el-link :underline="false">Unknown Pleasures</el-link>
-                            <span style="font-size:12px;color:#999">1979-06-14</span>
+                            <router-link :to="{name:'Album',params:{id:album.id}}" v-slot="{ href }">
+                                <el-link :href="href" :underline="false">{{ album.name }}</el-link>
+                            </router-link>
+                            <br>
+                            <span style="font-size:12px;color:#999">{{ album.publish_date }}</span>
                         </div>
                     </el-col>
                 </el-row>
@@ -142,24 +71,86 @@
 
 <script>
 import user_background from '../images/user_background1.jpg'
-import SongList from '../components/SongList.vue'
+import SongList from '../components/SongList2.vue'
 export default {
     data(){
         return {
             album_cover:"url(" + user_background + ")",
-            activeItem:"favSongs",
-            user:null
+            activeItem:"rank",
+            user:null,
+            createdSongLists:null,
+            favSongLists:null,
+            favAlbum:null,
+            rank:null
+        }
+    },
+    methods:{
+        loadCreatedSongList:function(){
+            this.ajax.get("songlist/",{creator_id:this.user.id},null,(data)=>{
+                this.createdSongLists = data
+            },errorData=>{
+
+            })
+        },
+        loadFavSongList:function(){
+            this.ajax.get("songlist/",{fav_user_id:this.user.id},null,(data)=>{
+                this.favSongLists = data
+            },errorData=>{
+
+            })
+        },
+        loadFavAlbum:function(){
+            this.ajax.get("album/",{fav_user_id:this.user.id},null,(data)=>{
+                this.favAlbum = data
+            },errorData=>{
+
+            })
+        },
+        loadRank:function(){
+            this.ajax_async.get("song/",{user_id:this.$route.params.id},null,(data)=>{
+                this.rank = data.results
+                // console.log("async")
+            },errorData=>{
+
+            })
+        },
+        tabClick:function(tab,event){
+            // console.log(tab, event);
+            if(tab.paneName=="createdSongLists"){
+                if(!this.createdSongLists){
+                    this.loadCreatedSongList()
+                }
+                
+            }
+            else if(tab.paneName=="collectedSongLists"){
+                if(!this.favSongLists){
+                    this.loadFavSongList()
+                }
+            }
+            else if(tab.paneName=="collectedAlbum"){
+                if(!this.favAlbum){
+                    this.loadFavAlbum()
+                }
+            }
+            // else if(tab.paneName=="rank"){
+            //     this.loadRank()
+            // }
+        },
+        loadUser:function(){
+            this.ajax.get("user/"+this.$route.params.id+"/",null,null,(data)=>{
+                this.user = data
+            },(errorData)=>{
+
+            })
         }
     },
     components:{
         SongList
     },
     created(){
-        this.ajax.get("user/"+this.$route.params.id+"/",null,null,(data)=>{
-            this.user = data
-        },(errorData)=>{
-
-        })
+        this.loadRank()
+        this.loadUser()
+        
     }
 }
 </script>

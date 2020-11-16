@@ -92,7 +92,9 @@ export default {
             volume:100,
             currentTime:0,
             status:"hidden",
-            mouseStatus:"leave"
+            mouseStatus:"leave",
+            playingId:null,
+            startTime:null,
         }
     },
     computed:{
@@ -147,6 +149,18 @@ export default {
             this.cutSong()
         },
         cutSong(){
+            if (this.playingId&&this.startTime) {
+                var endTime = new Date()
+                var timeDiff = Math.floor((endTime.getTime()-this.startTime.getTime())/1000)
+                if(this.playingId==this.song.id && timeDiff>(this.song.duration-30)){
+                    this.ajax.post("listenrecord/",{content_type:"song",object_id:this.playingId},null,(data)=>{
+
+                    },(errData)=>{
+
+                    })
+                }
+            }
+            // console.log(this.playingId,this.song.id,this.startTime,new Date())
             if(this.isPlaying){
                 this.$refs.audio.pause()
             }
@@ -156,6 +170,8 @@ export default {
                 this.$refs.audio.currentTime = 0
                 this.$refs.audio.play()
             })
+            this.playingId = this.song.id
+            this.startTime = new Date()
         },
         onTimeupdate(){
             this.currentTime = this.$refs.audio.currentTime;

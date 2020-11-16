@@ -1,23 +1,23 @@
 <template>
     <div>
-        <Recommend>
-        </Recommend>
-        <Album>
-        </Album>
-        <TopList>
-        </TopList>
+        <IndexSongList>
+        </IndexSongList>
+        <IndexAlbum>
+        </IndexAlbum>
+        <IndexRank>
+        </IndexRank>
     </div>
 </template>
 
 <script>
-import Recommend from '@/components/Recommend.vue'
-import Album from '@/components/Album.vue'
-import TopList from '@/components/TopList.vue'
+import IndexSongList from '@/components/IndexSongList.vue'
+import IndexAlbum from '@/components/IndexAlbum.vue'
+import IndexRank from '@/components/IndexRank.vue'
 export default {
     components: {
-        Recommend,
-        Album,
-        TopList
+        IndexSongList,
+        IndexAlbum,
+        IndexRank
     }
 }
 </script>

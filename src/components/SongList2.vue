@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-table
-            :data="songList"
+            :data="locLi"
             @cell-mouse-enter="cellMouseEnter"
             @cell-mouse-leave="cellMouseLeave">
             <el-table-column
@@ -56,9 +56,17 @@
             </el-table-column>
             <el-table-column
                 prop="duration"
-                label="时长">
+                label="时长"
+                v-if="showtype != 'rank'">
                 <template slot-scope="scope">
                     <span>{{ formatTime(scope.row.duration) }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                label="次数"
+                v-else>
+                <template slot-scope="scope">
+                    <span>{{ scope.row.listen_times }}</span>
                 </template>
             </el-table-column>
         </el-table>
@@ -69,6 +77,7 @@
 export default {
     data(){
         return {
+            locLi:[]
         }
     },
     methods:{
@@ -91,30 +100,37 @@ export default {
             return (m<10?"0":"")+parseInt(it/60)+":"+(s<10?"0":"")+parseInt(it%60)
         },
     },
+    watch:{
+        songList:{handler:function(newV,oldV){
+            this.locLi.splice(0,this.locLi.length)
+            console.log(this.locLi)
+            if(newV){
+                for (var v of newV){
+                    // v.songNameWidth = 24
+                    // v.songBtnWidth = 0
+                    this.$set(v,'songNameWidth',24)
+                    this.$set(v,'songBtnWidth',0)
+                    this.locLi.push(v)
+                }
+            }
+        },
+        immediate:true
+        }
+    },
     props:{
         showtype:{
             type:String,
             default:"playList",
             validator: function (value) {
                 // 这个值必须匹配下列字符串中的一个
-                return ['playList', 'album', 'artist'].indexOf(value) !== -1
+                return ['playList', 'album', 'artist','rank'].indexOf(value) !== -1
             }
         },
         songList:{
-            type:Array
+            type:Array,
+            default:()=>[]
         }
-    },
-    created:function(){
-        this.songList = this.songList.map((currentValue,index,arr)=>{
-            // Object.assign(currentValue,{songNameWidth:24,songBtnWidth:0})
-            // currentValue.songNameWidth = 24
-            // currentValue.songBtnWidth = 0
-            this.$set(currentValue,'songNameWidth',24)
-            this.$set(currentValue,'songBtnWidth',0)
-            return currentValue
-        })
     }
-
 }
 </script>
 

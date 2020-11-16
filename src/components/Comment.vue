@@ -23,7 +23,10 @@
             <el-avatar shape="square" style="float:left" :src="comment.user.avatar"></el-avatar>
             <!-- <div style="clear:both"></div> -->
             <div style="padding-left:50px;position:relative">
-                <el-link :underline="false" type="primary">{{comment.user.username}}</el-link>
+                <!-- <el-link :underline="false" type="primary">{{comment.user.username}}</el-link> -->
+                <router-link :to="{name:'User',params:{id:comment.user.id}}" v-slot="{ href }">
+                    <el-link :href="href" :underline="false" type="primary">{{ comment.user.username }}</el-link>
+                </router-link>
                 <p style="margin-top:6px;font-size:14px;margin-bottom:6px;">{{comment.content}}</p>
                 <!-- <el-row>
                     <el-col :span="20">
@@ -48,7 +51,8 @@
                     </el-link>
                 </div>
             </div>
-            <transition name="replay-tran">
+            <transition name="el-zoom-in-top">
+            <!-- <el-collapse-transition> -->
             <el-row v-if="comment.replay_show" style="padding-left:50px;margin-top:10px">
                 <el-col :span="22">
                     <el-input v-model="comment.replay_content" size="mini" placeholder="回复" maxlength="300" show-word-limit></el-input>
@@ -57,6 +61,7 @@
                     <el-button @click="commentHandle(comment.id,comment.replay_content)" size="mini" style="float:right;">回复</el-button>
                 </el-col>
             </el-row>
+            <!-- </el-collapse-transition> -->
             </transition>
             <el-divider></el-divider>
         </div>
@@ -88,7 +93,24 @@ export default {
                 return
             }
             if(comment.is_praised){
-                comment.is_praised = false
+                this.ajax.delete("praise/"+comment.praise_id+"/",null,null,(data)=>{
+                    comment.is_praised = false
+                    comment.pra_count -= 1
+                },(errorData)=>{
+
+                })
+            }
+            else{
+                this.ajax.post("praise/",{
+                    user:this.$store.state.loginUser.id,
+                    content_type:"comment",
+                    object_id:comment.id
+                },null,(data)=>{
+                    comment.is_praised = true
+                    comment.pra_count += 1
+                },(errorData)=>{
+
+                })
             }
         },
         replayHandle:function(comment){
@@ -99,6 +121,7 @@ export default {
             // console.log(this.currentPage)  //点击第几页
             this.ajax.get("comment/",{page:currentPage,type:this.type,target_id:this.target_id},null,(data)=>{
                 this.total = data.count
+                this.$emit("update-comment-count",data.count)
                 this.comments = data.results.map((currentValue,index,arr)=>{
                 currentValue.praise = 0
                 currentValue.replay_show = false
@@ -128,6 +151,7 @@ export default {
             }
             this.ajax.post("comment/",postData,null,(data)=>{
                     this.total+=1
+                    this.$emit("update-comment-count",this.total)
                     if(replay_target_id){
                         for(var comment of this.comments){
                             console.log(comment,this.comments)
@@ -159,6 +183,7 @@ export default {
     created(){
         this.ajax.get("comment/",{page:1,type:this.type,target_id:this.target_id},null,(data)=>{
             this.total = data.count
+            this.$emit("update-comment-count",data.count)
             this.comments = data.results.map((currentValue,index,arr)=>{
                 currentValue.praise = 0
                 currentValue.replay_show = false
@@ -171,12 +196,12 @@ export default {
 </script>
 
 <style>
-.replay-tran-enter-active, .replay-tran-leave-active {
+/* .replay-tran-enter-active, .replay-tran-leave-active {
     transition: opacity .5s;
 }
 
 .replay-tran-enter, .replay-tran-leave-to {
   opacity: 0;
-}
+} */
 
 </style>
